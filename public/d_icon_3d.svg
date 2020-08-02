@@ -1,0 +1,23 @@
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350">
+    <title>d_icon_3d</title>
+    <polygon points="96.5 130.43 96.5 225.6 173.5 263.6 253.5 226.1 253.5 130.43 173.5 96.1 96.5 130.43" fill="#911d89"
+             stroke="#282827" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <polyline points="96.5 130.43 173.5 167.75 253.5 130.43" fill="#911d89" stroke="#282827" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="2"/>
+    <line x1="173.5" y1="263.6" x2="173.5" y2="198.6" fill="#42b983" stroke="#282827" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="2"/>
+    <line x1="173.5" y1="177.75" x2="173.5" y2="167.75" fill="#42b983" stroke="#282827" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="2"/>
+    <polyline points="173.5 157.75 173.5 42.6 158 56.6" fill="#42b983" stroke="#282827" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="2"/>
+    <line x1="188.5" y1="56.6" x2="173.5" y2="42.6" fill="#42b983" stroke="#282827" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="2"/>
+    <polyline points="173.5 188.6 291.99 245.45 287.07 225.15" fill="#42b983" stroke="#282827" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="2"/>
+    <line x1="272.53" y1="251.96" x2="291.99" y2="245.45" fill="#42b983" stroke="#282827" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="2"/>
+    <polyline points="173.5 188.6 58.01 245.45 62.93 225.15" fill="#42b983" stroke="#282827" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="2"/>
+    <line x1="77.47" y1="251.96" x2="58.01" y2="245.45" fill="#42b983" stroke="#282827" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="2"/>
+</svg>

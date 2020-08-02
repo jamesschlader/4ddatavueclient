@@ -18,7 +18,9 @@
 
     </header>
     <main id="main">
-      <aside id="sidebar"></aside>
+      <aside id="sidebar">
+        <SideBar/>
+      </aside>
       <router-view/>
     </main>
     <footer id="footer">
@@ -27,14 +29,17 @@
   </div>
 </template>
 
-<style lang="scss">
+<script>
+    import SideBar from "@/components/SideBar";
 
-  $green-lime: #42b983;
-  $green-dark: #2c3e50;
-  $purple-font: #911d89;
-  $black-basic: #222222;
-  $grey-light: #c5c5c5;
-  $grey-dark: #666666;
+    export default {
+        components: {SideBar}
+    };
+
+</script>
+
+<style lang="scss">
+  @import "./assets/css/_variables.scss";
 
   #app {
     font-family: 'Titillium Web', sans-serif;
