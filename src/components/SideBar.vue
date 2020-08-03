@@ -2,7 +2,7 @@
   <div>
     <h1>Applications</h1>
     <div>
-      <router-link to="/about" class="link-text"><h4 class="clickable">Build an application</h4></router-link>
+      <router-link to="/buildanapp" class="link-text"><h4 class="clickable">Build an application</h4></router-link>
     </div>
   </div>
 </template>
