@@ -7,56 +7,51 @@
         v-on:save-collection-name="saveCollectionName"
     ></BuildDataCollection>
     <div>
-      <div v-show="collection.dataSets.length > 0" class="dataset-card-display">
-        <div v-for="set in collection.dataSets" v-show="set.title" class="dataset-card">
-          <h3>{{set.title}}</h3>
-          <ul v-for="data in set.fields">
-            <li>{{data.name}}</li>
-          </ul>
-        </div>
-      </div>
+      <BuildDataDataSetTableCard v-show="collection.dataSets.length > 0" v-bind:collection="this.collection"/>
       <BuildDataSet
           v-show="this.step === 'dataset'"
           v-on:advance-step="onAdvanceStep"
+          v-on:update-collection="updateCollection"
           v-bind:collection="this.collection"
+          v-bind:fields="this.collection.dataSets"
       ></BuildDataSet>
     </div>
   </div>
 </template>
 
 <script>
-    import BuildDataSet from "@/components/BuildDataSet";
-    import BuildDataCollection from "@/components/BuildDataCollection";
+    import BuildDataSet from "@/components/buildData/BuildDataSet";
+    import BuildDataCollection from "@/components/buildData/BuildDataCollection";
+    import BuildDataDataSetTableCard from "@/components/buildData/BuildDataDataSetTableCard";
 
     export default {
         name: "BuildApplication",
-        components: {BuildDataCollection, BuildDataSet},
+        components: {BuildDataDataSetTableCard, BuildDataCollection, BuildDataSet},
         data: function () {
             return {
                 step: "collection",
                 collection: {
                     collectionName: "",
-                    dataSets: []
+                    dataSets: [{fields: []}]
                 }
             };
         },
         methods: {
             onAdvanceStep(step) {
-                console.log(`incoming dataset to save: `, step.dataSet);
                 this.collection.collectionName = step.collectionName;
-                console.log(`gonna try to print out current collection.dataSets...`);
-                this.collection.dataSets.fields &&
-                this.collection.dataSets.fields.forEach(set => console.log(set.name));
-                console.log(`adding the incoming dataset to collection.dataSets...`);
-                this.collection.dataSets = [...this.collection.dataSets, step.dataSet];
+                if (!this.collection.dataSets.map(set => set.title).includes(step.dataSet.title)) {
+                    this.collection.dataSets = [...this.collection.dataSets, step.dataSet];
+                }
                 this.step = step.nextStep;
                 this.collection.collectionName = step.collectionName;
-                this.collection.dataSets.fields &&
-                this.collection.dataSets.fields.forEach(set => console.log(set.name));
-                console.log(`the current collectionName is: ${this.collection.collectionName}`, this.collection);
+                this.collection.dataSets.forEach(set => console.log(`new data sets array: `, set));
             },
             saveCollectionName(name) {
                 this.collection.collectionName = name;
+            },
+            updateCollection(data) {
+                console.log(`data to update: `, data);
+                this.collection.dataSets.forEach(set => console.log(`new data sets array: `, set));
             }
         }
     };
@@ -170,7 +165,8 @@
     display: flex;
     flex-direction: column;
     height: auto;
-    width: 150px;
+    min-width: 300px;
+    width: auto;
     margin: 5px auto;
     border: 1px solid $purple-font;
     border-radius: 5px;

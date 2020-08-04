@@ -50,7 +50,7 @@
                   <label for="data-source">Based on:</label>
                   <select v-model="row.dataSource" name="dataSource" id="data-source" multiple>
                     <option disabled value="">Select data sources</option>
-                    <option v-for="(item, index) in numberFields(rows)" v-bind:value="item"
+                    <option v-for="(item, index) in numberFields(fields)" v-bind:value="item"
                             v-bind:key="index">{{item.name}}
                     </option>
                   </select>
@@ -66,7 +66,7 @@
 
             <td v-show="row.name"><i class="fas fa-trash deleter" v-on:click="deleteRow(index)"></i></td>
           </tr>
-          <button class="btn-small" v-on:click.prevent="addDataField">Add a field</button>
+          <button class="btn-small top-margin" v-on:click.prevent="addDataField">Add a field</button>
         </table>
         <div class="drive-left">
           <button v-on:click.prevent="submitDataTable" class="btn-large">Create Data Set</button>
@@ -79,7 +79,7 @@
 <script>
     export default {
         name: "BuildDataSet",
-        props: ["collection"],
+        props: ["collection", "fields"],
         data: function () {
             return {
                 rows: [
@@ -105,15 +105,21 @@
                         fields: this.rows.filter(set => set.name)
                     }
                 };
+                this.tableTitle = "";
+                this.rows = [{title: "", name: "", description: "", dataType: "", dataSource: [], strategy: "input"}];
                 this.$emit('advance-step', updateObject);
             },
             addDataField() {
-                console.log(`here's the current rows: `, this.rows);
                 this.rows =
                     [...this.rows, {name: "", dataType: "", description: "", dataSource: [], strategy: "input"}];
+                this.updateInfo.dataSet = this.rows.filter(row => !row.name);
+                // this.$emit("update-collection", this.updateInfo);
             },
-            numberFields(rows) {
-                return this.rows.filter(row => row.dataType === "number");
+            numberFields(prop) {
+                const theseRows = this.rows.filter(row => row.dataType === "number");
+                const otherRows = prop.map(item => item.fields).filter(arr => arr.length > 0).
+                    flatMap(data => data.filter(field => field.dataType === "number"));
+                return [...theseRows, ...otherRows];
             },
             goBack() {
                 this.updateInfo.collectionName = this.collection.collectionName;
@@ -137,4 +143,7 @@
     border: 1px solid black;
   }
 
+  .top-margin {
+    margin-top: 20px;
+  }
 </style>
