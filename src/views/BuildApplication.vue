@@ -4,22 +4,21 @@
     <BuildDataCollection
         v-show="this.step === 'collection'"
         v-on:advance-step="onAdvanceStep"
-        v-on:save-collection-name="saveCollectionName"
     ></BuildDataCollection>
     <div>
-      <BuildDataDataSetTableCard v-show="collection.dataSets.length > 0" v-bind:collection="this.collection"/>
+      <BuildDataDataSetTableCard v-show="this.showTables" v-bind:collection="this.collection"/>
       <BuildDataSet
-          v-show="this.step === 'dataset'"
+          v-show="this.step === 'nodes' && !this.loading"
           v-on:advance-step="onAdvanceStep"
-          v-on:update-collection="updateCollection"
           v-bind:collection="this.collection"
-          v-bind:fields="this.collection.dataSets"
+          v-bind:fields="this.collection.worlds || []"
       ></BuildDataSet>
     </div>
   </div>
 </template>
 
 <script>
+    import {mapActions, mapGetters} from "vuex";
     import BuildDataSet from "@/components/buildData/BuildDataSet";
     import BuildDataCollection from "@/components/buildData/BuildDataCollection";
     import BuildDataDataSetTableCard from "@/components/buildData/BuildDataDataSetTableCard";
@@ -29,30 +28,50 @@
         components: {BuildDataDataSetTableCard, BuildDataCollection, BuildDataSet},
         data: function () {
             return {
+                showTables: false,
+                loading: false,
                 step: "collection",
                 collection: {
-                    collectionName: "",
-                    dataSets: [{fields: []}]
+                    name: "",
+                    description: "",
+                    worlds: [
+                        {
+                            name: "",
+                            description: "",
+                            nodes: [
+                                {
+                                    name: "",
+                                    xId: 0,
+                                    yId: 0,
+                                    description: "",
+                                    strategy: "",
+                                    power: 0,
+                                    dataType: "",
+                                    dataSources: [{name: ""}]
+                                }]
+                        }
+                    ]
                 }
             };
         },
         methods: {
-            onAdvanceStep(step) {
-                this.collection.collectionName = step.collectionName;
-                if (!this.collection.dataSets.map(set => set.title).includes(step.dataSet.title)) {
-                    this.collection.dataSets = [...this.collection.dataSets, step.dataSet];
+            ...mapActions(["addWorldToCollection"]),
+            async onAdvanceStep(step) {
+                this.collection = this.getCollectionByName(step.name);
+                if (step.world && step.world.name !== "" &&
+                    !this.collection.worlds.map(world => world.name).includes(step.world.name)) {
+                    this.loading = !this.loading;
+                    await this.addWorldToCollection(step);
+                    this.loading = !this.loading;
                 }
                 this.step = step.nextStep;
-                this.collection.collectionName = step.collectionName;
-                this.collection.dataSets.forEach(set => console.log(`new data sets array: `, set));
-            },
-            saveCollectionName(name) {
-                this.collection.collectionName = name;
-            },
-            updateCollection(data) {
-                console.log(`data to update: `, data);
-                this.collection.dataSets.forEach(set => console.log(`new data sets array: `, set));
             }
+        },
+        computed: {
+            ...mapGetters(["getCollectionByName"])
+        },
+        created() {
+            this.showTables = this.getCollectionByName(this.collection.name).worlds && true;
         }
     };
 </script>
@@ -99,7 +118,7 @@
       margin: 0 0 20px;
 
       input {
-        width: 90%
+        width: 80%
       }
     }
 
@@ -161,7 +180,7 @@
     }
   }
 
-  .dataset-card {
+  .nodes-card {
     display: flex;
     flex-direction: column;
     height: auto;
@@ -180,7 +199,7 @@
     }
   }
 
-  .dataset-card-display {
+  .nodes-card-display {
     display: flex;
     flex-direction: row;
     justify-content: center;

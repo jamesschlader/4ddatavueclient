@@ -1,14 +1,14 @@
 <template>
-  <div class="dataset-card-display">
-    <div v-for="set in collection.dataSets" v-show="set.title" class="dataset-card">
+  <div class="nodes-card-display">
+    <div v-for="world in collection.worlds" v-show="world.name" class="nodes-card">
       <table>
-        <caption>{{set.title}}</caption>
+        <caption>{{world.name}}</caption>
         <thead>
-        <th v-for="(field, index) in set.fields" v-bind:key="index">{{field.name}}</th>
+        <th v-for="(node, index) in world.nodes" v-bind:key="index">{{node.name}}</th>
         </thead>
         <tbody>
-        <td v-for="(field, index) in set.fields" v-bind:key="index">{{field.dataType}}: {{field.strategy}}
-          {{field.dataSource && field.dataSource.length > 0 ? `-> watches: ${field.dataSource.map(source=>source.name)}`
+        <td v-for="(node, index) in world.nodes" v-bind:key="index">{{node.dataType}}: {{node.strategy}}
+          {{node.dataSource && node.dataSource.length > 0 ? `-> watches: ${node.dataSource.map(source=>source.name)}`
           : ''}}
         </td>
         </tbody>
