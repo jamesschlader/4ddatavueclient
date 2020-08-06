@@ -21,7 +21,9 @@
       <aside id="sidebar">
         <SideBar/>
       </aside>
-      <router-view/>
+      <div id="router-view">
+        <router-view/>
+      </div>
     </main>
     <footer id="footer">
       footer
@@ -40,6 +42,10 @@
 
 <style lang="scss">
   @import "./assets/css/_variables.scss";
+
+  #router-view {
+    position: relative;
+  }
 
   #app {
     font-family: 'Titillium Web', sans-serif;

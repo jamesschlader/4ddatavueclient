@@ -9,4 +9,6 @@ export const universes = `query {universes {
                                         YId
                                         strategy
                                     }
-    }}}`;
+                                }
+                              }
+                            }`;

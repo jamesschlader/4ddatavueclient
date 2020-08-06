@@ -12,6 +12,11 @@ const routes = [
         component: Main
     },
     {
+        path: "/login",
+        name: "Login",
+        component: () => import("../components/Login.vue")
+    },
+    {
         path: '/about',
         name: 'About',
         // route level code-splitting
@@ -31,10 +36,21 @@ const routes = [
     }
 ];
 
+
 const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes
 });
 
+router.beforeEach((to, from, next) => {
+    // redirect to login page if not logged in and trying to access a restricted page
+    const publicPages = ['/login', '/register'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = localStorage.getItem('jwt') && true;
+    if (authRequired && !loggedIn) {
+        return next('/login');
+    }
+    next();
+});
 export default router;

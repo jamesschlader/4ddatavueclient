@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="build-application">
     <h1>Build Application</h1>
     <BuildDataCollection
         v-show="this.step === 'collection'"
@@ -14,6 +14,7 @@
           v-bind:fields="this.collection.worlds || []"
       ></BuildDataSet>
     </div>
+    <Loader v-show="this.loading"/>
   </div>
 </template>
 
@@ -22,10 +23,11 @@
     import BuildDataSet from "@/components/buildData/BuildDataSet";
     import BuildDataCollection from "@/components/buildData/BuildDataCollection";
     import BuildDataDataSetTableCard from "@/components/buildData/BuildDataDataSetTableCard";
+    import Loader from "@/components/Loader";
 
     export default {
         name: "BuildApplication",
-        components: {BuildDataDataSetTableCard, BuildDataCollection, BuildDataSet},
+        components: {BuildDataDataSetTableCard, BuildDataCollection, BuildDataSet, Loader},
         data: function () {
             return {
                 showTables: false,

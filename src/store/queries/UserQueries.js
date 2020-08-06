@@ -1,0 +1,1 @@
+export const loginQuery = userData => `query { login (request: {username: \"${userData.username}\", password: \"${userData.password}\"}) {jwt} }`;

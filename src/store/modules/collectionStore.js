@@ -30,15 +30,15 @@ const mutations = {
 };
 
 const actions = {
-    setCollections: async ({commit}) => {
-        const response = await launcher(universes);
+    setCollections: async ({commit, rootState}) => {
+        const response = await launcher(universes, rootState.users.jwt);
         commit("setCollections", response.data.data.universes);
     },
-    addCollection: async ({commit}, collection) => {
-        const response = await launcher(createUniverse(collection));
+    addCollection: async ({commit, rootState}, collection) => {
+        const response = await launcher(createUniverse(collection, rootState.users.jwt));
         commit("addCollection", response.data.data.createUniverse);
     },
-    addWorldToCollection: ({commit}, collection) => commit("addWorldToCollection", collection)
+    addWorldToCollection: ({commit, rootState}, collection) => commit("addWorldToCollection", collection)
 };
 
 export default {state, getters, mutations, actions};
