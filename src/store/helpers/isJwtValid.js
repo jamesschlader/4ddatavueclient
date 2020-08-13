@@ -10,7 +10,6 @@ export default function (token) {
             return decoded.User.credentialsNonExpired;
         });
     } catch (error) {
-        localStorage.removeItem("jwt");
         return false;
     }
 }

@@ -5,12 +5,13 @@ import isJwtValid from "@/store/helpers/isJwtValid";
 
 const state = {
     user: {},
-    jwt: localStorage.getItem('jwt') || '',
+    jwt: '',
     isAuthenticated: false
 };
 
 const getters = {
-    getUser: state => state.user
+    getUser: state => state.user,
+    isAuthenticated: state => state.isAuthenticated
 };
 
 const mutations = {
@@ -18,17 +19,19 @@ const mutations = {
         const decoded = isJwtValid(token);
         console.log(`we have a decoded jwt: `, decoded);
         if (decoded) {
-            localStorage.setItem("jwt", token);
             state.user = decoded.User;
             state.jwt = token;
             state.isAuthenticated = true;
+        } else {
+            state.user = {};
+            state.jwt = "";
+            state.isAuthenticated = false;
         }
     },
     logout: (state) => {
         state.user = {};
         state.jwt = "";
         state.isAuthenticated = false;
-        localStorage.removeItem("jwt");
     }
 };
 
