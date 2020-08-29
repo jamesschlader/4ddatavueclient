@@ -1,6 +1,10 @@
 export const universes = `query {universes {
+                                universeId
                                 name
                                 description
+                                user {
+                                    username
+                                }
                                 worlds {
                                     name
                                     description
@@ -12,3 +16,21 @@ export const universes = `query {universes {
                                 }
                               }
                             }`;
+
+export const getUniversesForUser = (username) => `query {getUniversesForUser(username: \"${username}\") {
+                                 universeId
+                                name
+                                description
+                                user{
+                                    username
+                                }
+                                worlds {
+                                    worldId
+                                    name
+                                    description
+                                    nodes {
+                                        name
+                                        description
+                                    }
+                                }
+                            }}`;

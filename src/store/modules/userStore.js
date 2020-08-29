@@ -17,7 +17,6 @@ const getters = {
 const mutations = {
     login: (state, token) => {
         const decoded = isJwtValid(token);
-        console.log(`we have a decoded jwt: `, decoded);
         if (decoded) {
             state.user = decoded.User;
             state.jwt = token;
@@ -40,9 +39,7 @@ const actions = {
         const response = await launcher(loginQuery(userData));
         commit("login", response.data.data.login.jwt);
     },
-    logout: async ({commit}) => {
-
-    },
+    logout: async ({commit}) => commit("logout"),
     signUp: async ({dispatch, commit}, userData) => {
         const response = await launcher(signupMutation(userData));
         commit("login", response.data.data.signup);

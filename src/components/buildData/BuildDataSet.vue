@@ -99,6 +99,7 @@
             submitDataTable() {
                 const updateObject = {
                     name: this.collection.name,
+                    universeId: this.collection.universeId,
                     nextStep: "nodes",
                     world: {...this.world}
                 };
@@ -112,9 +113,10 @@
                     [...this.world.nodes, {name: "", dataType: "", description: "", dataSource: [], strategy: "input"}];
             },
             numberFields(prop) {
+                console.log(`in numberField, here's the prop passed in: `, prop);
                 const theseRows = this.world.nodes.filter(row => row.dataType === "number");
-                const otherRows = prop.map(item => item.nodes).filter(node => node.length > 0).
-                    flatMap(data => data.filter(field => field.dataType === "number"));
+                const otherRows = prop.length > 0 ? prop.map(item => item.nodes).filter(node => node.length > 0).
+                    flatMap(data => data.filter(field => field.dataType === "number")) : [];
                 return [...theseRows, ...otherRows];
             },
             goBack() {
