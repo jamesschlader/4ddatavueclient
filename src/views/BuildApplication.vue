@@ -1,20 +1,19 @@
 <template>
   <div id="build-application">
     <h1>Build Application</h1>
-    <UserExistingCollections v-bind:user="getUser"/>
+    <UserExistingCollections v-bind:user="getUser" v-bind:collections="this.getCollectionsForUser(this.getUser)"
+                             v-on:advance-step="editCollection"/>
     <BuildDataCollection
         v-show="this.step === 'collection'"
         v-on:advance-step="onAddCollection"
     ></BuildDataCollection>
-    <div>
-      <BuildDataDataSetTableCard v-show="this.showTables" v-bind:collection="this.collection"/>
-      <BuildDataSet
-          v-show="this.step === 'nodes' && !this.loading"
-          v-on:advance-step="onAddDataSet"
-          v-bind:collection="this.collection"
-          v-bind:fields="this.collection.worlds || []"
-      ></BuildDataSet>
-    </div>
+    <BuildDataSet
+        v-show="this.step === 'nodes' && !this.loading"
+        v-on:advance-step="onAddDataSet"
+        v-on:go-back="goBack"
+        v-bind:collection="this.collection"
+        v-bind:fields="this.collection.worlds || []"
+    ></BuildDataSet>
     <Loader v-show="this.loading"/>
   </div>
 </template>
@@ -23,18 +22,18 @@
     import {mapActions, mapGetters} from "vuex";
     import BuildDataSet from "@/components/buildData/BuildDataSet";
     import BuildDataCollection from "@/components/buildData/BuildDataCollection";
-    import BuildDataDataSetTableCard from "@/components/buildData/BuildDataDataSetTableCard";
     import Loader from "@/components/Loader";
     import UserExistingCollections from "@/components/buildData/UserExistingCollections";
 
     export default {
         name: "BuildApplication",
-        components: {BuildDataDataSetTableCard, BuildDataCollection, BuildDataSet, Loader, UserExistingCollections},
+        components: {BuildDataCollection, BuildDataSet, Loader, UserExistingCollections},
         data: function () {
             return {
                 showTables: false,
                 loading: false,
                 step: "collection",
+                collections: [],
                 collection: {
                     universeId: 0,
                     name: "",
@@ -43,6 +42,7 @@
                     worlds: [
                         {
                             name: "",
+                            worldId: 0,
                             description: "",
                             nodes: [
                                 {
@@ -51,7 +51,7 @@
                                     yId: 0,
                                     description: "",
                                     strategy: "",
-                                    power: 0,
+                                    power: 1,
                                     dataType: "",
                                     dataSources: [{name: ""}]
                                 }]
@@ -61,7 +61,7 @@
             };
         },
         methods: {
-            ...mapActions(["addCollection", "addNewWorldToExistingCollection"]),
+            ...mapActions(["addCollection", "addNewWorldToExistingCollection", "editWorld", "fetchCollectionsForUser"]),
             async onAddCollection(updateInfo) {
                 this.loading = !this.loading;
                 await this.addCollection(updateInfo);
@@ -70,22 +70,45 @@
                 this.step = updateInfo.nextStep;
             },
             async onAddDataSet(updateInfo) {
-                const isExistingWorld = this.collection.worlds &&
-                    this.collection.worlds.map(world => world.name).includes(updateInfo.world.name);
+                console.log(`the worlds for the current collection: `, this.collection.worlds);
+                const worldIdsList = this.collection.worlds.map(world => world.worldId);
+                console.log(`here's the worldList:`, worldIdsList);
+                console.log(`here's what we're searching for: ${updateInfo.world.worldId}`);
+                const isExistingWorld = worldIdsList.includes(parseInt(updateInfo.world.worldId));
                 console.log(`does a world exist with this name already? ${isExistingWorld}`);
-                if (!isExistingWorld) {
+                if (isExistingWorld) {
+                    const {universeId} = updateInfo;
+                    const {worldId, name, description, nodes} = updateInfo.world;
+                    const worldUpdate = {
+                        worldId, name, description, nodes, universeId
+                    };
+                    this.loading = !this.loading;
+                    await this.editWorld(worldUpdate);
+                    this.loading = !this.loading;
+                } else {
+                    console.log(`gonna try to add a new world to the collection: `, updateInfo);
                     this.loading = !this.loading;
                     await this.addNewWorldToExistingCollection(updateInfo);
                     this.loading = !this.loading;
                 }
                 this.step = updateInfo.nextStep;
+            },
+            editCollection(collection) {
+                this.collection = collection;
+                console.log(`gonna edit collection: `, this.collection);
+                this.step = "nodes";
+            },
+            goBack(updateObject) {
+                this.step = updateObject.nextStep;
             }
         },
         computed: {
-            ...mapGetters(["getCollectionByName", "getUser"])
+            ...mapGetters(["getCollectionByName", "getUser", "getCollectionsForUser"])
         },
         updated() {
             this.showTables = !!this.getCollectionByName(this.collection.name).worlds;
+            this.collections = this.getCollectionsForUser(this.getUser.username);
+            console.log(`UPDATING collection in BuildApplication: `, this.collections);
         }
     };
 </script>

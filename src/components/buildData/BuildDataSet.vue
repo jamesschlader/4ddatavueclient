@@ -4,7 +4,8 @@
     <h1>Collection: <span class="secondary-color">{{this.collection.name}}</span></h1>
     <h2>Build data set</h2>
     <div class="container">
-      <form>
+      <BuildDataDataSetTableCard v-bind:collection="this.collection" v-on:edit-world="editWorld"/>
+      <form class="top-margin">
         <table>
           <caption>
             <div class="fourdd-title">
@@ -64,7 +65,7 @@
 
                 <td v-show="node.dataSource === 'product'">
                   <label for="power">Power:</label>
-                  <input type="number" id="power" name="power" min="1" value="1">
+                  <input type="number" id="power" name="power" min="0" value="1">
 
                 </td>
               </div>
@@ -83,12 +84,16 @@
 </template>
 
 <script>
+    import BuildDataDataSetTableCard from "@/components/buildData/BuildDataDataSetTableCard";
+
     export default {
         name: "Buildnodes",
+        components: {BuildDataDataSetTableCard},
         props: ["collection", "fields"],
         data: function () {
             return {
                 world: {
+                    worldId: 0,
                     name: "",
                     description: "",
                     nodes: [{name: "", description: "", dataType: "", dataSource: [], strategy: "input"}]
@@ -97,23 +102,43 @@
         },
         methods: {
             submitDataTable() {
+                console.log(`do we have a name for our node?`, this.world.nodes[0].name);
+                if (this.world.nodes[0].name) {
+                    this.world.nodes = this.world.nodes.map((node, index) => {
+                        const {name, description, power, strategy, dataSource} = node;
+                        return {
+                            name, description, power,
+                            worldId: this.world.worldId,
+                            nodeSpaceId: -1,
+                            xId: index + 1,
+                            yId: 1,
+                            operator: strategy,
+                            watchedSpaces: dataSource
+                        };
+                    });
+                } else {
+                    console.log(`gonna change the nodes to blank`);
+                    this.world.nodes = [];
+                    console.log(`did I change the nodes to blank? `, this.world.nodes);
+                }
                 const updateObject = {
                     name: this.collection.name,
                     universeId: this.collection.universeId,
                     nextStep: "nodes",
                     world: {...this.world}
                 };
+                console.log(`here's the updateObject going up:`, updateObject);
+                this.$emit('advance-step', updateObject);
+                this.world.worldId = 0;
                 this.world.name = "";
                 this.world.description = "";
                 this.world.nodes = [{name: "", description: "", dataType: "", dataSource: [], strategy: "input"}];
-                this.$emit('advance-step', updateObject);
             },
             addDataField() {
                 this.world.nodes =
                     [...this.world.nodes, {name: "", dataType: "", description: "", dataSource: [], strategy: "input"}];
             },
             numberFields(prop) {
-                console.log(`in numberField, here's the prop passed in: `, prop);
                 const theseRows = this.world.nodes.filter(row => row.dataType === "number");
                 const otherRows = prop.length > 0 ? prop.map(item => item.nodes).filter(node => node.length > 0).
                     flatMap(data => data.filter(field => field.dataType === "number")) : [];
@@ -122,12 +147,8 @@
             goBack() {
                 const updateObject = {
                     nextStep: "collection",
-                    name: this.collection.name,
-                    world: {
-                        name: this.collection.worlds[0].name
-                    }
                 };
-                this.$emit('advance-step', updateObject);
+                this.$emit('go-back', updateObject);
             },
             deleteRow(rowToRemove) {
                 this.rows = this.rows.filter((row, index) => index !== rowToRemove);
@@ -136,6 +157,10 @@
                         {name: "", description: "", dataType: "", dataSource: [], strategy: "input"}
                     ];
                 }
+            },
+            editWorld(world) {
+                this.world = world;
+                console.log(`just updated the world to edit at an existing one. Here's the state: `, this.world);
             }
         }
     };

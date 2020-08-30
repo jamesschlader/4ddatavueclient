@@ -1,5 +1,5 @@
 import launcher from "@/store/launcher";
-import {addNewWorldToExistingUniverse, createUniverse} from "@/store/mutations/UniverseMutations";
+import {addNewWorldToExistingUniverse, createUniverse, editWorld} from "@/store/mutations/UniverseMutations";
 import {getUniversesForUser, universes} from "@/store/queries/UniverseQueries";
 
 const state = {
@@ -17,10 +17,8 @@ const state = {
 const getters = {
     getCollections: state => state.collections,
     getCollectionByName: state => name => {
-        console.log(`here's the name of the collection to get from the service: ${name}`);
-        console.log(`here's all the collections: `, state.collections);
-        const foundCollection = state.collections ? state.collections.find(collection => collection.name === name) : [];
-        console.log(`foundCollection = `, foundCollection);
+        const foundCollection = state.collections ? state.collections.filter(collection => collection.name === name) :
+            [];
         return foundCollection;
     },
     getCollectionsForUser: state => username => state.collections.filter(
@@ -31,23 +29,24 @@ const getters = {
 const mutations = {
     setCollections: (state, collections) => state.collections = collections,
     addCollection: (state, collection) => {
-        console.log(`dude, I better have some collections: `, state);
-        console.log(`here's the collection to add: `, collection);
         state.collections = state.collections ? [...state.collections, collection] : [collection];
     },
     addWorldToCollection: (state, payload) => {
+        console.log(`what's the payload?`, payload);
         const targetCollection = state.collections.find(collection => collection.name === payload.name);
         if (targetCollection) {
             targetCollection.worlds =
                 targetCollection.worlds ? [...targetCollection.worlds, payload.world] : [payload.world];
         }
-        console.log(`added world to collection: `, payload, state.collections);
     },
     fetchCollectionsForUser: (state, payload) => {
-        console.log(`incoming payload is: `, payload);
         if (payload.data) {
-            state.collections = payload.data.getUniversesForUser;
+            console.log(`payload.data: `, payload.data);
+            state.collections = payload.data.data.getUniversesForUser;
         }
+    },
+    editWorld: (state, payload) => {
+        console.log(`got me an edited world: `, payload);
     }
 };
 
@@ -70,19 +69,30 @@ const actions = {
     addNewWorldToExistingCollection: async ({commit, rootState}, collection) => {
         const {world} = collection;
         const dto = {
-            universeId: state.collections.find(collection => collection.name === collection.name).universeId,
+            universeId: collection.universeId,
             name: world.name,
             description: world.description,
-            worldId: world.worldId
+            worldId: world.worldId,
+            nodes: world.nodes
         };
+        console.log(`do I have everything I need? `, dto);
         const response = await launcher(addNewWorldToExistingUniverse(dto), rootState.users.jwt);
         console.log(`after trying to add new world to collection, here's the response from the server: `, response);
-        commit("addWorldToCollection", response.data.data.addWorldToUniverse);
+        if (response.data.data) {
+            commit("addWorldToCollection", response.data.data.addWorldToUniverse);
+        } else {
+            this.fetchCollectionsForUser();
+        }
     },
     fetchCollectionsForUser: async ({commit, rootState}) => {
         const user = rootState.users.user;
         const response = await launcher(getUniversesForUser(user.username), rootState.users.jwt);
         commit("fetchCollectionsForUser", response);
+    },
+    editWorld: async ({commit, rootState}, world) => {
+        const user = rootState.users.user;
+        const response = await launcher(editWorld(world), user.jwt);
+        commit("editWorld", response);
     }
 };
 

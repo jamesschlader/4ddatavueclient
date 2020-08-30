@@ -1,3 +1,5 @@
+import {mapNodeAsString} from "@/store/helpers/mapNodeAsString";
+
 export const createUniverse = universe => `mutation {
                 createUniverse( 
                     universe: { 
@@ -35,6 +37,9 @@ export const addExistingWorldToNewUniverse = dto => `mutation {
                                       ){
                                         universeId
                                         name
+                                        user {
+                                            username
+                                        }
                                         description
                                          worlds {
                                             worldId
@@ -48,25 +53,59 @@ export const addExistingWorldToNewUniverse = dto => `mutation {
                                         }
                                         }`;
 
-export const addNewWorldToExistingUniverse = dto => `mutation {
-                    addWorldToUniverse(
-                        universeId: ${dto.universeId},
-                        worldDTO: {
-                            worldId: ${dto.worldId},
-                            name: \"${dto.name}\",
-                            description: \"${dto.description}\"
-                        }
-                    ){
+export const addNewWorldToExistingUniverse = dto => {
+    const nodes = dto.nodes.filter(node => node.nodeSpaceId && node).map(node => mapNodeAsString(node));
+    let base = `mutation { addWorldToUniverse( worldDTO: { name: \"${dto.name}\"`;
+    base = dto.universeId > 0 ? base + `, universeId: ${dto.universeId}` : base;
+    base = dto.worldId > 0 ? base + `, worldId: ${dto.worldId}` : base;
+    base = dto.description ? base + `, description: \"${dto.description}\"` : base;
+    base = dto.nodes.length > 0 ? base + `, nodes: [${nodes}]` : base;
+    const tail = `}){
                         universeId
                         name
                         description
+                        user {
+                            username
+                        }
                         worlds {
                             worldId
                             name
                             description
                             nodes {
+                                nodeSpaceId
                                 name
                                 description
                             }
                         }
-                    }}`;
+                    }
+               }`;
+    return base + tail;
+};
+
+export const editWorld = dto => {
+    const nodes = dto.nodes.filter(node => node.nodeSpaceId && node).map(node => mapNodeAsString(node));
+    return `mutation {
+                    editWorld (
+                        worldDTO: {
+                            worldId: \"${dto.worldId}\",
+                            name: \"${dto.name}\",
+                            description: \"${dto.description}\",
+                            nodes: [${nodes}],
+                            universeId: ${dto.universeId}
+                        }
+                    ) {
+                        worldId
+                        name
+                        description
+                        nodes {
+                            nodeSpaceId
+                            name
+                            description
+                        }
+                        universe {
+                            universeId
+                        }
+                    }
+                }`;
+};
+

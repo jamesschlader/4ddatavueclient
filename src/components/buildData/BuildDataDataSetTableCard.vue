@@ -1,8 +1,9 @@
 <template>
-  <div class="nodes-card-display">The worlds should display here...
+  <div class="nodes-card-display">
     <div v-for="world in collection.worlds" v-show="world.name" class="nodes-card">
-      <table>
-        <caption>World: {{world.name}} Owner: {{collection.user.username}}</caption>
+      <table v-if="world.nodes && world.nodes.length > 0">
+        <caption class="clickable" v-on:dblclick="editWorld(world)"><p>World: {{world.name}} - {{world.description}}</p>
+        </caption>
         <thead>
         <th v-for="(node, index) in world.nodes" v-bind:key="index">{{node.name}}</th>
         </thead>
@@ -13,6 +14,13 @@
         </td>
         </tbody>
       </table>
+      <table v-else>
+        <caption class="clickable" v-on:dblclick="editWorld(world)">World: {{world.name}} - {{world.description}}
+        </caption>
+        <thead>
+        <th>No Nodes</th>
+        </thead>
+      </table>
     </div>
   </div>
 </template>
@@ -21,6 +29,11 @@
     export default {
         name: "BuildDataDataSetTableCard",
         props: ["collection"],
+        methods: {
+            editWorld(world) {
+                this.$emit('edit-world', world);
+            }
+        },
         created() {
             console.log(`CREATED build data card, here's the incoming collection: `, this.collection);
         },
@@ -41,6 +54,13 @@
   th, td {
     min-width: 60px;
     width: 150px
+  }
+
+  .clickable {
+    &:hover {
+      cursor: pointer;
+      font-weight: bold;
+    }
   }
 
 </style>

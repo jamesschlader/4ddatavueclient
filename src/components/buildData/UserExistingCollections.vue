@@ -1,8 +1,12 @@
 <template>
   <div>
     <h3>Existing Collections for {{user.username}}</h3>
-    <div v-for="collection in getCollectionsForUser(user.username)">
-      <p>Name: {{collection.name}}</p>
+    <div v-for="collection in this.getCollectionsForUser(user.username)"
+         class="collection-card"
+         v-on:click="editCollection(collection)"
+    >
+      <h4>{{collection.name}}</h4>
+      <p>{{collection.description}}</p>
     </div>
   </div>
 </template>
@@ -14,28 +18,43 @@
         name: "UserExistingCollections",
         props: ["user"],
         data() {
-            return {
-                collections: {}
-            };
+            return {};
         },
         methods: {
-            ...mapActions(["setCollections"])
+            ...mapActions(["fetchCollectionsForUser"]),
+            editCollection(collection) {
+                this.$emit('advance-step', collection);
+            }
         },
         computed: {
             ...mapGetters(["getCollectionsForUser"])
         },
         created() {
-            this.setCollections();
-            console.log(`CREATED in user existing collections, here's the user's collections: `,
-                this.getCollectionsForUser(this.user.username));
-        },
-        updated() {
-            console.log(`UPDATED in user existing collections, here's the user's collections: `,
-                this.getCollectionsForUser(this.user.username));
+            this.fetchCollectionsForUser();
         }
     };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  .collection-target {
+    &:hover {
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
 
+  .collection-card {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    border: solid black 1px;
+    width: 25%;
+    margin: 10px;
+
+    &:hover {
+      box-shadow: #911d89 5px 5px;
+      cursor: pointer;
+    }
+
+  }
 </style>
