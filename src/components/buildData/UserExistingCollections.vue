@@ -1,12 +1,17 @@
 <template>
   <div>
     <h3>Existing Collections for {{user.username}}</h3>
-    <div v-for="collection in this.getCollectionsForUser(user.username)"
-         class="collection-card"
-         v-on:click="editCollection(collection)"
-    >
-      <h4>{{collection.name}}</h4>
-      <p>{{collection.description}}</p>
+    <div class="collection-container" v-if="this.getCollectionsForUser(user.username).length > 0">
+      <div v-for="collection in this.getCollectionsForUser(user.username)"
+           class="collection-card"
+           v-on:click="editCollection(collection)"
+      >
+        <h4>{{collection.name}}</h4>
+        <p>{{collection.description}}</p>
+      </div>
+    </div>
+    <div class="collection-container" v-else>
+      <h4>No collections to display</h4>
     </div>
   </div>
 </template>
@@ -36,6 +41,11 @@
 </script>
 
 <style scoped lang="scss">
+  .collection-container {
+    display: flex;
+    justify-content: center;
+  }
+
   .collection-target {
     &:hover {
       font-weight: bold;

@@ -31,6 +31,20 @@ export const getUniversesForUser = (username) => `query {getUniversesForUser(use
                                     nodes {
                                         name
                                         description
+                                        XId
+                                        YId
+                                        watchedSpaces {
+                                            name
+                                            description
+                                            XId
+                                            YId
+                                            dataType
+                                            strategy
+                                            power
+                                        }
+                                        dataType
+                                        strategy
+                                        power
                                     }
                                 }
                             }}`;

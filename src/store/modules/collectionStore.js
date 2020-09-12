@@ -7,7 +7,7 @@ const state = {
         universeId: 0, name: "", description: "", worlds: [
             {
                 worldId: 0, name: "", description: "", nodes: [{
-                    xId: 0, yId: 0, name: "", description: "", strategy: "", power: 1, dataSources: [{name: ""}]
+                    xId: 0, yId: 0, name: "", description: "", strategy: "", dataType: "", power: 1, watchedSpaces: [{name: ""}]
                 }]
             }], user: {username: ""}
     }],
@@ -34,10 +34,12 @@ const mutations = {
     addWorldToCollection: (state, payload) => {
         console.log(`what's the payload?`, payload);
         const targetCollection = state.collections.find(collection => collection.name === payload.name);
+        console.log(`here's the collection to update with the payload; `, targetCollection);
         if (targetCollection) {
             targetCollection.worlds =
                 targetCollection.worlds ? [...targetCollection.worlds, payload.world] : [payload.world];
         }
+        console.log(`Did the targetCollection save to teh state? `, state.collections);
     },
     fetchCollectionsForUser: (state, payload) => {
         if (payload.data) {

@@ -1,7 +1,10 @@
 <template>
   <div>
     <button v-on:click.prevent="goBack">Back to previous step</button>
-    <h1>Collection: <span class="secondary-color">{{this.collection.name}}</span></h1>
+    <div class="title-container">
+      <h1>Collection: <span class="secondary-color">{{this.collection.name}}</span></h1>
+      <button v-show="this.fields.length > 0" class="button-get-data">Make some data</button>
+    </div>
     <h2>Build data set</h2>
     <div class="container">
       <BuildDataDataSetTableCard v-bind:collection="this.collection" v-on:edit-world="editWorld"/>
@@ -33,7 +36,7 @@
                 <td>
                   <label for="data-type">Type:</label>
                   <select v-model="node.dataType" name="dataType" id="data-type">
-                    <option value="string">Text</option>
+                    <option value="text">Text</option>
                     <option value="number">Number</option>
                   </select>
                 </td>
@@ -55,7 +58,7 @@
 
                 <td v-show="node.strategy !== 'input'">
                   <label for="data-source">Based on:</label>
-                  <select v-model="node.dataSource" name="dataSource" id="data-source" multiple>
+                  <select v-model="node.watchedSpaces" name="dataType" id="data-source" multiple>
                     <option disabled value="">Select data sources</option>
                     <option v-for="(item, index) in numberFields(fields)" v-bind:value="item"
                             v-bind:key="index">{{item.name}}
@@ -96,7 +99,7 @@
                     worldId: 0,
                     name: "",
                     description: "",
-                    nodes: [{name: "", description: "", dataType: "", dataSource: [], strategy: "input"}]
+                    nodes: [{name: "", description: "", xId: 0, yId: 0, dataType: "", watchedSpaces: [], power: 1, strategy: "input"}]
                 }
             };
         },
@@ -105,15 +108,18 @@
                 console.log(`do we have a name for our node?`, this.world.nodes[0].name);
                 if (this.world.nodes[0].name) {
                     this.world.nodes = this.world.nodes.map((node, index) => {
-                        const {name, description, power, strategy, dataSource} = node;
+                        const {name, description, power, strategy, dataType, watchedSpaces} = node;
+                        console.log(`watchedSpaces before save: `, watchedSpaces);
+                        console.log(`dataType before save: ${dataType}`);
                         return {
                             name, description, power,
                             worldId: this.world.worldId,
                             nodeSpaceId: -1,
                             xId: index + 1,
                             yId: 1,
-                            operator: strategy,
-                            watchedSpaces: dataSource
+                            strategy,
+                            dataType,
+                            watchedSpaces
                         };
                     });
                 } else {
@@ -132,21 +138,22 @@
                 this.world.worldId = 0;
                 this.world.name = "";
                 this.world.description = "";
-                this.world.nodes = [{name: "", description: "", dataType: "", dataSource: [], strategy: "input"}];
+                this.world.nodes = [{name: "", description: "", dataType: "", watchedSpaces: [], strategy: "input"}];
             },
             addDataField() {
                 this.world.nodes =
-                    [...this.world.nodes, {name: "", dataType: "", description: "", dataSource: [], strategy: "input"}];
+                    [...this.world.nodes,
+                        {name: "", dataType: "", description: "", watchedSpaces: [], strategy: "input"}];
             },
             numberFields(prop) {
-                const theseRows = this.world.nodes.filter(row => row.dataType === "number");
+                const theseRows = this.world.nodes && this.world.nodes.filter(row => row.dataType === "number");
                 const otherRows = prop.length > 0 ? prop.map(item => item.nodes).filter(node => node.length > 0).
                     flatMap(data => data.filter(field => field.dataType === "number")) : [];
                 return [...theseRows, ...otherRows];
             },
             goBack() {
                 const updateObject = {
-                    nextStep: "collection",
+                    nextStep: "start",
                 };
                 this.$emit('go-back', updateObject);
             },
@@ -160,8 +167,14 @@
             },
             editWorld(world) {
                 this.world = world;
-                console.log(`just updated the world to edit at an existing one. Here's the state: `, this.world);
+                console.log(`just updated the world to edit an existing one. Here's the state: `, this.world);
             }
+        },
+        created() {
+            console.log(`just created BuildDataSet, here's the collection: `, this.collection);
+        },
+        updated() {
+            console.log(`updated BuildDataSet, here's the collection prop: `, this.collection);
         }
     };
 </script>
@@ -174,5 +187,15 @@
 
   .top-margin {
     margin-top: 20px;
+  }
+
+  .title-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .button-get-data {
+    padding: 0 10px;
   }
 </style>

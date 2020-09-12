@@ -48,13 +48,14 @@
             this.logout();
         },
         methods: {
-            ...mapActions(["login", "logout"]),
+            ...mapActions(["login", "logout", "fetchCollectionsForUser"]),
             async handleSubmit(e) {
                 this.submitted = true;
                 const {username, password} = this;
                 if (username && password) {
                     this.loggingIn = !this.loggingIn;
                     await this.login({username, password});
+                    await this.fetchCollectionsForUser();
                     this.loggingIn = !this.loggingIn;
                     await this.$router.push("/buildanapp");
                 }

@@ -9,7 +9,7 @@ export function mapNodeAsString(nodeValueSpace) {
         base = description ? base + `, description: \"${description}\"` : base;
         base = operator ? base + `, operator: \"${operator}\"` : base;
         base = power > 0 ? base + `, power: ${power}` : base;
-        base = watchedSpaces.length > 0 ? `, watchedSpaces: [${watchedSpacesText}]` : base;
+        base = watchedSpaces && watchedSpaces.length > 0 ? `, watchedSpaces: [${watchedSpacesText}]` : base;
         return base + tail;
     }
     return "";

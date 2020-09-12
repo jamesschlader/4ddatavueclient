@@ -3,6 +3,9 @@
     <h1>Build Application</h1>
     <UserExistingCollections v-bind:user="getUser" v-bind:collections="this.getCollectionsForUser(this.getUser)"
                              v-on:advance-step="editCollection"/>
+    <button v-on:click.prevent="exposeAddCollection" v-show="this.step === 'start'" class="top-margin">Add a
+      collection
+    </button>
     <BuildDataCollection
         v-show="this.step === 'collection'"
         v-on:advance-step="onAddCollection"
@@ -32,7 +35,7 @@
             return {
                 showTables: false,
                 loading: false,
-                step: "collection",
+                step: "start",
                 collections: [],
                 collection: {
                     universeId: 0,
@@ -53,7 +56,7 @@
                                     strategy: "",
                                     power: 1,
                                     dataType: "",
-                                    dataSources: [{name: ""}]
+                                    watchedSpaces: [{name: ""}]
                                 }]
                         }
                     ]
@@ -66,13 +69,17 @@
                 this.loading = !this.loading;
                 await this.addCollection(updateInfo);
                 this.collection = this.getCollectionByName(updateInfo.name);
-                this.loading = !this.loading;
+                console.log(`did I set the new collection to be the active collection? `, this.collection);
                 this.step = updateInfo.nextStep;
+                this.loading = !this.loading;
             },
             async onAddDataSet(updateInfo) {
+                console.log(`here's the whole collection in the component state: `, this.collection);
+                console.log(`here's the user's collection from the store: `,
+                    this.getCollectionsForUser(this.getUser.username));
                 console.log(`the worlds for the current collection: `, this.collection.worlds);
                 const worldIdsList = this.collection.worlds.map(world => world.worldId);
-                console.log(`here's the worldList:`, worldIdsList);
+                console.log(`here's the worldIdsList:`, worldIdsList);
                 console.log(`here's what we're searching for: ${updateInfo.world.worldId}`);
                 const isExistingWorld = worldIdsList.includes(parseInt(updateInfo.world.worldId));
                 console.log(`does a world exist with this name already? ${isExistingWorld}`);
@@ -100,6 +107,9 @@
             },
             goBack(updateObject) {
                 this.step = updateObject.nextStep;
+            },
+            exposeAddCollection() {
+                this.step = "collection";
             }
         },
         computed: {
@@ -115,4 +125,8 @@
 
 <style lang="scss">
   @import "../assets/css/baseStyle";
+
+  .top-margin {
+    margin-top: 10px;
+  }
 </style>
