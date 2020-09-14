@@ -79,7 +79,7 @@
           <button class="btn-small top-margin" v-on:click.prevent="addDataField">Add a field</button>
         </table>
         <div class="drive-left">
-          <button v-on:click.prevent="submitDataTable" class="btn-large">Create Data Set</button>
+          <button v-on:click.prevent="submitDataTable" class="btn-large">{{this.message}}</button>
         </div>
       </form>
     </div>
@@ -92,7 +92,7 @@
     export default {
         name: "Buildnodes",
         components: {BuildDataDataSetTableCard},
-        props: ["collection", "fields"],
+        props: ["collection", "fields", "message"],
         data: function () {
             return {
                 world: {

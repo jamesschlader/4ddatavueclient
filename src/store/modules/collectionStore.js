@@ -92,8 +92,7 @@ const actions = {
         commit("fetchCollectionsForUser", response);
     },
     editWorld: async ({commit, rootState}, world) => {
-        const user = rootState.users.user;
-        const response = await launcher(editWorld(world), user.jwt);
+        const response = await launcher(editWorld(world), rootState.users.jwt);
         commit("editWorld", response);
     }
 };

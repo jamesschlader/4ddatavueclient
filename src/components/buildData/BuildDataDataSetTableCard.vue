@@ -1,6 +1,6 @@
 <template>
   <div class="nodes-card-display">
-    <div v-for="world in collection.worlds" v-show="world.name" class="nodes-card">
+    <div v-for="world in collection.worlds" class="nodes-card">
       <table v-if="world.nodes && world.nodes.length > 0">
         <caption class="clickable" v-on:dblclick="editWorld(world)"><p>World: {{world.name}} - {{world.description}}</p>
         </caption>

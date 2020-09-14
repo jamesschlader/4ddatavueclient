@@ -16,6 +16,7 @@
         v-on:go-back="goBack"
         v-bind:collection="this.collection"
         v-bind:fields="this.collection.worlds || []"
+        v-bind:message="this.saveMessage"
     ></BuildDataSet>
     <Loader v-show="this.loading"/>
   </div>
@@ -36,6 +37,7 @@
                 showTables: false,
                 loading: false,
                 step: "start",
+                saveMessage: "",
                 collections: [],
                 collection: {
                     universeId: 0,
@@ -68,8 +70,9 @@
             async onAddCollection(updateInfo) {
                 this.loading = !this.loading;
                 await this.addCollection(updateInfo);
-                this.collection = this.getCollectionByName(updateInfo.name);
+                this.collection = this.getCollectionByName(updateInfo.name)[0];
                 console.log(`did I set the new collection to be the active collection? `, this.collection);
+                this.saveMessage = "Create new data set";
                 this.step = updateInfo.nextStep;
                 this.loading = !this.loading;
             },
@@ -104,6 +107,7 @@
                 this.collection = collection;
                 console.log(`gonna edit collection: `, this.collection);
                 this.step = "nodes";
+                this.saveMessage = "Save Collection";
             },
             goBack(updateObject) {
                 this.step = updateObject.nextStep;
