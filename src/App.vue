@@ -14,6 +14,12 @@
         <li>
           <router-link to="/about">About</router-link>
         </li>
+        <li v-if="getUser.username">
+          <router-link to="/profile">{{getUser.username}}</router-link>
+        </li>
+        <li v-else>
+          <router-link to="/login">Login</router-link>
+        </li>
       </ul>
 
     </header>
@@ -33,9 +39,13 @@
 
 <script>
     import SideBar from "@/components/SideBar";
+    import {mapGetters} from "vuex";
 
     export default {
-        components: {SideBar}
+        components: {SideBar},
+        computed: {
+            ...mapGetters(["getUser"])
+        }
     };
 
 </script>

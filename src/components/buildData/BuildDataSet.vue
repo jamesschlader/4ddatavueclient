@@ -7,7 +7,7 @@
     </div>
     <h2>Build data set</h2>
     <div class="container">
-      <BuildDataDataSetTableCard v-bind:collection="this.collection" v-on:edit-world="editWorld"/>
+      <WorldTableCard v-for="world in this.collection.worlds" v-bind:world="world" v-on:edit-world="editWorld"/>
       <form class="top-margin">
         <table>
           <caption>
@@ -87,11 +87,11 @@
 </template>
 
 <script>
-    import BuildDataDataSetTableCard from "@/components/buildData/BuildDataDataSetTableCard";
+    import WorldTableCard from "@/components/display/WorldTableCard";
 
     export default {
         name: "Buildnodes",
-        components: {BuildDataDataSetTableCard},
+        components: {WorldTableCard},
         props: ["collection", "fields", "message"],
         data: function () {
             return {

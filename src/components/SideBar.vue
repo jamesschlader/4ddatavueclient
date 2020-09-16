@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1>Applications</h1>
+    <h1>Collections</h1>
     <div>
-      <router-link to="/buildanapp" class="link-text"><h4 class="clickable">Build an application</h4></router-link>
-      <router-link to="/getuseruniverses" class="link-text"><h4 class="clickable">Get existing collections</h4>
+      <router-link to="/getuseruniverses" class="link-text"><h4 class="clickable">My collections</h4>
+        <router-link to="/buildanapp" class="link-text"><h4 class="clickable">Build an collection</h4></router-link>
       </router-link>
     </div>
   </div>

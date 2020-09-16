@@ -57,7 +57,7 @@
                     await this.login({username, password});
                     await this.fetchCollectionsForUser();
                     this.loggingIn = !this.loggingIn;
-                    await this.$router.push("/buildanapp");
+                    await this.$router.push("/getuseruniverses");
                 }
             }
         }

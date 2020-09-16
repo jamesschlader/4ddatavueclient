@@ -1,44 +1,41 @@
 <template>
   <div>
-    <h1>Gonna get some universes...</h1>
-    <div>
-      <ul>
-        <li v-for="collection in this.getCollections">
-          <BuildDataDataSetTableCard v-bind:collection="collection"></BuildDataDataSetTableCard>
-        </li>
-      </ul>
+    <h1>My Collections</h1>
+    <div class="card-container">
+      <div v-for="collection in this.getCollectionsForUser(this.getUser.username)">
+        <UniverseTableCard v-bind:universe="collection"></UniverseTableCard>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
     import {mapActions, mapGetters} from "vuex";
-    import BuildDataDataSetTableCard from "@/components/buildData/BuildDataDataSetTableCard";
+    import UniverseTableCard from "@/components/display/UniverseTableCard";
 
     export default {
         name: "GetUniverses",
-        components: {BuildDataDataSetTableCard},
+        components: {UniverseTableCard},
         methods: {
-            ...mapActions(["setCollections"])
+            ...mapActions(["fetchCollectionsForUser"])
         },
         computed: {
-            ...mapGetters(["getCollections"])
+            ...mapGetters(["getCollectionsForUser", "getUser"])
         },
         created() {
-            this.setCollections();
-            console.log(`inside get universes CREATED, here's the collections to get: `, this.getCollections);
+            this.fetchCollectionsForUser();
         },
         updated() {
-            console.log(`inside get universes UPDATED, here's the collections to get: `, this.getCollections);
-        },
-        data() {
-            return {};
         }
     };
 </script>
 
 <style scoped lang="scss">
-  ul {
-    list-style: none;
+  .card-container {
+    margin: 10px;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
+
 </style>
