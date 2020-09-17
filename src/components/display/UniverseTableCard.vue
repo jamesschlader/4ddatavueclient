@@ -1,5 +1,5 @@
 <template>
-  <div class="universe-card">
+  <div class="universe-card" v-on:click.prevent="editUniverse">
     <h3>{{universe.name}}</h3>
     <h5>{{universe.description}}</h5>
     <WorldTableCard v-for="world in universe.worlds" v-bind:world="world"/>
@@ -8,11 +8,19 @@
 
 <script>
     import WorldTableCard from "@/components/display/WorldTableCard";
+    import {mapActions} from 'vuex';
 
     export default {
         name: "UniverseTableCard",
         props: ["universe"],
-        components: {WorldTableCard}
+        components: {WorldTableCard},
+        methods: {
+            ...mapActions(["setSelectedCollection"]),
+            editUniverse() {
+                this.setSelectedCollection(this.universe);
+                this.$emit('edit-universe');
+            }
+        }
     };
 </script>
 

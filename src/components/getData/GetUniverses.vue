@@ -3,7 +3,7 @@
     <h1>My Collections</h1>
     <div class="card-container">
       <div v-for="collection in this.getCollectionsForUser(this.getUser.username)">
-        <UniverseTableCard v-bind:universe="collection"></UniverseTableCard>
+        <UniverseTableCard v-bind:universe="collection" v-on:edit-universe="editUniverse"></UniverseTableCard>
       </div>
     </div>
   </div>
@@ -17,7 +17,10 @@
         name: "GetUniverses",
         components: {UniverseTableCard},
         methods: {
-            ...mapActions(["fetchCollectionsForUser"])
+            ...mapActions(["fetchCollectionsForUser"]),
+            editUniverse() {
+                this.$router.push("/edituniverse");
+            }
         },
         computed: {
             ...mapGetters(["getCollectionsForUser", "getUser"])

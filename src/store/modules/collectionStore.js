@@ -11,11 +11,11 @@ const state = {
                 }]
             }], user: {username: ""}
     }],
+    selectedCollection: {},
     ids: [1]
 };
 
 const getters = {
-    getCollections: state => state.collections,
     getCollectionByName: state => name => {
         const foundCollection = state.collections ? state.collections.filter(collection => collection.name === name) :
             [];
@@ -23,7 +23,7 @@ const getters = {
     },
     getCollectionsForUser: state => username => state.collections.filter(
         collection => collection.user.username === username),
-    getCollectionById: state => id => state.collections.filter(collection => collection.universeId === id)[0],
+    getSelectedCollection: state => state.selectedCollection
 };
 
 const mutations = {
@@ -49,7 +49,8 @@ const mutations = {
     },
     editWorld: (state, payload) => {
         console.log(`got me an edited world: `, payload);
-    }
+    },
+    setSelectedCollection: (state, collection) => state.selectedCollection = collection
 };
 
 const actions = {
@@ -94,6 +95,9 @@ const actions = {
     editWorld: async ({commit, rootState}, world) => {
         const response = await launcher(editWorld(world), rootState.users.jwt);
         commit("editWorld", response);
+    },
+    setSelectedCollection: ({commit}, collection) => {
+        commit("setSelectedCollection", collection);
     }
 };
 

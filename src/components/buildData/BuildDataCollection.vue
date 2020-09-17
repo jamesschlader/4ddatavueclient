@@ -13,6 +13,7 @@ import gql from "graphql-tag";
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
 
     export default {
         name: "BuildDataCollection",
@@ -34,6 +35,13 @@ import gql from "graphql-tag";
                     }
                 }
             };
+        },
+        computed: {
+            ...mapGetters(["getSelectedCollection"])
+        },
+        created() {
+            this.updateInfo.name = this.getSelectedCollection.name || "";
+            this.updateInfo.description = this.getSelectedCollection.description || "";
         }
     };
 </script>

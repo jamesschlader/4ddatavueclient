@@ -1,5 +1,5 @@
 import {shallowMount} from '@vue/test-utils';
-import HelloWorld from '@/components/Main.vue';
+import HelloWorld from '@/views/Main.vue';
 
 describe('Main.vue', () => {
     it('renders props.msg when passed', () => {

@@ -1,6 +1,6 @@
 <template>
   <div class="card-display">
-    <h5 class="clickable" v-on:dblclick="editWorld(world)"><p>World: {{world.name}} - {{world.description}}</p>
+    <h5 class="clickable" v-on:click="editWorld(world)"><p>World: {{world.name}} - {{world.description}}</p>
     </h5>
     <table v-if="world.nodes && world.nodes.length > 0">
       <thead>
@@ -43,6 +43,7 @@
 </script>
 
 <style scoped lang="scss">
+  @import "../../assets/css/_variables.scss";
   table, th, td {
     padding: 5px;
     border: 1px solid black;
@@ -57,6 +58,14 @@
   .card-display {
     display: flex;
     flex-direction: column;
+    padding: 10px;
+    border: 1px black solid;
+    border-radius: 10px;
+
+    &:hover {
+      cursor: pointer;
+      box-shadow: $purple-font 5px 5px;
+    }
   }
 
   .clickable {
