@@ -2,7 +2,9 @@
   <div>
     <h1>{{name}}</h1>
     <p>{{description}}</p>
-    <NodeDisplay v-for="node in nodes" v-bind:node="node"></NodeDisplay>
+    <div class="node-display-container">
+      <NodeDisplay v-for="node in nodes" v-bind:node="node"></NodeDisplay>
+    </div>
   </div>
 </template>
 
@@ -35,5 +37,10 @@
 
 <style scoped lang="scss">
   @import "../../assets/css/_variables.scss";
+
+  .node-display-container {
+    display: flex;
+    flex-direction: row;
+  }
 
 </style>

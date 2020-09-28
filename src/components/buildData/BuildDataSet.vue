@@ -196,6 +196,6 @@
   }
 
   .button-get-data {
-    padding: 0 10px;
+    padding: 1rem;
   }
 </style>

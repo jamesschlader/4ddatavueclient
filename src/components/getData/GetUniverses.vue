@@ -39,6 +39,7 @@
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    max-width: 20vw
   }
 
 </style>

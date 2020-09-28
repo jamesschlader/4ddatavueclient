@@ -35,7 +35,11 @@ const routes = [
                 path: "/editworld",
                 name: "DisplayWorld",
                 component: () => import("../components/display/WorldDisplay.vue")
-            }
+            }, {
+                path: "/buildanapp",
+                name: "BuildAnApp",
+                component: () => import("../views/BuildApplication.vue")
+            },
         ],
         component: () => import("../views/Collections.vue")
     },
