@@ -1,5 +1,6 @@
 <template>
   <div class="card-display">
+    <p>{{ this.node.name }}</p>
     <h4 class="card-display-item">Name: {{name || 'No name'}} <span>
       <EditTextField v-if="editThis === 'name'" v-bind:field="this.name" v-bind:fieldName="'name'"
                      v-on:save-field="editField"/>
@@ -41,19 +42,19 @@
 </template>
 
 <script>
-    import EditTextField from "@/components/getData/EditTextField";
+import EditTextField from "@/components/getData/EditTextField";
 
-    export default {
-        name: "NodeDisplay",
-        components: {EditTextField},
-        props: ["node"],
-        data() {
-            return {
-                name: "",
-                description: "",
-                XId: 0,
-                YId: 0,
-                nodeSpaceId: 0,
+export default {
+  name: "NodeDisplay",
+  components: {EditTextField},
+  props: ["node"],
+  data() {
+    return {
+      name: "",
+      description: "",
+      XId: 0,
+      YId: 0,
+      nodeSpaceId: 0,
                 strategy: "",
                 power: 1,
                 dataType: "",
@@ -67,18 +68,25 @@
                 this.editThis = fieldName;
                 if (editedField) {
                     this.editThis = null;
-                    this[fieldName] = editedField;
+                  this[fieldName] = editedField;
                 }
             }
         },
-        created() {
-            for (const property in this.node) {
-                if (this.node.hasOwnProperty(property)) {
-                    this[property] = this.node[property];
-                }
-            }
-        }
-    };
+  created() {
+    for (const property in this.node) {
+      if (this.node.hasOwnProperty(property)) {
+        this[property] = this.node[property];
+      }
+    }
+  },
+  updated() {
+    for (const property in this.node) {
+      if (this.node.hasOwnProperty(property)) {
+        this[property] = this.node[property];
+      }
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">

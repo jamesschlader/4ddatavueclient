@@ -10,20 +10,20 @@
 </template>
 
 <script>
-    import {mapActions, mapGetters} from "vuex";
-    import UniverseTableCard from "@/components/display/UniverseTableCard";
+import {mapActions, mapGetters} from "vuex";
+import UniverseTableCard from "@/components/display/UniverseTableCard";
 
-    export default {
-        name: "GetUniverses",
-        components: {UniverseTableCard},
-        methods: {
-            ...mapActions(["fetchCollectionsForUser"]),
-            editUniverse() {
-                this.$router.push("/edituniverse");
-            }
-        },
-        computed: {
-            ...mapGetters(["getCollectionsForUser", "getUser"])
+export default {
+  name: "GetUniverses",
+  components: {UniverseTableCard},
+  methods: {
+    ...mapActions(["fetchCollectionsForUser"]),
+    editUniverse() {
+      this.$router.push("/edituniverse");
+    }
+  },
+  computed: {
+    ...mapGetters(["getCollectionsForUser", "getUser"])
         },
         created() {
             this.fetchCollectionsForUser();
@@ -39,7 +39,7 @@
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    max-width: 20vw
+    min-width: 20vw
   }
 
 </style>

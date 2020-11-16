@@ -1,36 +1,18 @@
 <template>
-  <div id="collection-container">
-    <aside id="sidebar">
-      <SideBar></SideBar>
-    </aside>
-    <div id="collection-router-view">
-      <router-view/>
-    </div>
+  <div>
+    <GetUniverses/>
   </div>
 </template>
 
 <script>
-    import SideBar from "@/components/SideBar.vue";
+import GetUniverses from "@/components/getData/GetUniverses";
 
-    export default {
-        name: "Collections",
-        components: {SideBar},
-        created() {
-            this.$router.push("/getuseruniverses");
-        }
-    };
+export default {
+  name: "Collections",
+  components: {GetUniverses}
+};
 </script>
 
-<style scoped lang="scss">
-  @import "../assets/css/_variables.scss";
+<style scoped>
 
-  #collection-container {
-    display: grid;
-    grid-template-columns: minmax(150px, 15%) 1fr;
-    min-height: 100vh
-  }
-
-  #sidebar {
-    background-color: $grey-light;
-  }
 </style>

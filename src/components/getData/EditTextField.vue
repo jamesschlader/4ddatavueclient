@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="center-vert">
     <input type="text" v-model="editedField">
     <button v-on:click.prevent="saveField">Save</button>
   </div>
@@ -26,5 +26,9 @@
 </script>
 
 <style scoped>
+.center-vert {
+  display: flex;
+  align-items: center;
+}
 
 </style>

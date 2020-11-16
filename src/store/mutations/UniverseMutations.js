@@ -45,9 +45,30 @@ export const addExistingWorldToNewUniverse = dto => `mutation {
                                             worldId
                                             name
                                             description
-                                            nodes {
+                                             nodes {
                                                 name
                                                 description
+                                                XId
+                                                YId
+                                                watchedSpaces {
+                                                    name
+                                                    description
+                                                    XId
+                                                    YId
+                                                    dataType
+                                                    strategy
+                                                    power
+                                                }
+                                                dataType
+                                                strategy
+                                                power
+                                                value {
+                                                    stringValue
+                                                }
+                                                world {
+                                                    worldId
+                                                    name
+                                                }
                                             }
                                           }
                                         }
@@ -59,6 +80,7 @@ export const addNewWorldToExistingUniverse = dto => {
     base = dto.universeId > 0 ? base + `, universeId: ${dto.universeId}` : base;
     base = dto.worldId > 0 ? base + `, worldId: ${dto.worldId}` : base;
     base = dto.description ? base + `, description: \"${dto.description}\"` : base;
+    console.log(`about to add the nodes into the mutation. Here they are: `, nodes);
     base = dto.nodes.length > 0 ? base + `, nodes: [${nodes}]` : base;
     const tail = `}){
                         universeId
@@ -105,6 +127,28 @@ export const editWorld = dto => {
                         universe {
                             universeId
                         }
+                    }
+                }`;
+};
+
+export const editUniverse = dto => {
+    return `mutation {
+                editUniverse (universe: {universeId: ${dto.universeId}, name: \"${dto.name}\", description: \"${dto.description}\"}) {
+                       universeId
+                       name
+                       user {
+                            username
+                        }
+                       description
+                         worlds {
+                            worldId
+                            name
+                            description
+                            nodes {
+                                name
+                                description
+                            }
+                        } 
                     }
                 }`;
 };

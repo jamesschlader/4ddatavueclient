@@ -1,5 +1,5 @@
 import launcher from "@/store/launcher";
-import {addNewWorldToExistingUniverse, createUniverse, editWorld} from "@/store/mutations/UniverseMutations";
+import {addNewWorldToExistingUniverse, createUniverse, editUniverse} from "@/store/mutations/UniverseMutations";
 import {getUniversesForUser, universes} from "@/store/queries/UniverseQueries";
 
 const state = {
@@ -7,7 +7,7 @@ const state = {
         universeId: 0, name: "", description: "", worlds: [
             {
                 worldId: 0, name: "", description: "", nodes: [{
-                    xId: 0, yId: 0, name: "", description: "", strategy: "", dataType: "", power: 1, watchedSpaces: [{name: ""}]
+                    xId: 0, yId: 0, name: "", description: "", strategy: "", dataType: "", power: 1, value: 0, watchedSpaces: [{name: ""}]
                 }]
             }], user: {username: ""}
     }],
@@ -39,18 +39,23 @@ const mutations = {
             targetCollection.worlds =
                 targetCollection.worlds ? [...targetCollection.worlds, payload.world] : [payload.world];
         }
-        console.log(`Did the targetCollection save to teh state? `, state.collections);
+        console.log(`Did the targetCollection save to the state? `, state.collections);
     },
     fetchCollectionsForUser: (state, payload) => {
-        if (payload.data) {
+        if (payload.data.data) {
             console.log(`payload.data: `, payload.data);
             state.collections = payload.data.data.getUniversesForUser;
         }
+        if (payload.data.errors && payload.data.errors.length > 0) {
+            console.log(`Errors from attempt to get fetchCollectionsForUser: `, payload.data.errors);
+        }
     },
-    editWorld: (state, payload) => {
-        console.log(`got me an edited world: `, payload);
-    },
-    setSelectedCollection: (state, collection) => state.selectedCollection = collection
+    setSelectedCollection: (state, collection) => state.selectedCollection = collection,
+    editUniverse: (state, universe) => {
+        const collectionToEdit = state.collections.find(collection => collection.universeId === universe.universeId);
+        collectionToEdit.name = universe.name;
+        collectionToEdit.description = universe.description;
+    }
 };
 
 const actions = {
@@ -84,20 +89,19 @@ const actions = {
         if (response.data.data) {
             commit("addWorldToCollection", response.data.data.addWorldToUniverse);
         } else {
-            this.fetchCollectionsForUser();
+            await this.actions.fetchCollectionsForUser();
         }
     },
     fetchCollectionsForUser: async ({commit, rootState}) => {
-        const user = rootState.users.user;
-        const response = await launcher(getUniversesForUser(user.username), rootState.users.jwt);
+        const response = await launcher(getUniversesForUser(), rootState.users.jwt);
         commit("fetchCollectionsForUser", response);
-    },
-    editWorld: async ({commit, rootState}, world) => {
-        const response = await launcher(editWorld(world), rootState.users.jwt);
-        commit("editWorld", response);
     },
     setSelectedCollection: ({commit}, collection) => {
         commit("setSelectedCollection", collection);
+    },
+    editUniverse: async ({commit, rootState}, universe) => {
+        const response = await launcher(editUniverse(universe), rootState.users.jwt);
+        commit("editUniverse", response.data.data.editUniverse);
     }
 };
 

@@ -1,15 +1,18 @@
 export function mapNodeAsString(nodeValueSpace) {
     if (nodeValueSpace) {
-        const {nodeSpaceId, xId, yId, worldId, name, description, operator, power, watchedSpaces} = nodeValueSpace;
+        const {nodeSpaceId, xId, yId, worldId, name, description, dataType, power, strategy, watchedSpaces} = nodeValueSpace;
         const watchedSpacesText = watchedSpaces && watchedSpaces.map(space => mapNodeAsString(space));
-        let base = `{xid: ${xId ? xId : 0}, yid: ${yId ? yId : 0}, name: \"${name ? name : ''}\"`;
+        let base = `{nodeSpaceId: ${nodeSpaceId},xid: ${xId ? xId : 0}, yid: ${yId ? yId : 0}, name: \"${name ? name :
+            ''}\"`;
         const tail = "}";
         base = worldId > 0 ? base + `, worldId: ${worldId}` : base;
-        base = nodeSpaceId > 0 ? base + `, nodeSpaceId: ${nodeSpaceId}` : base;
         base = description ? base + `, description: \"${description}\"` : base;
-        base = operator ? base + `, operator: \"${operator}\"` : base;
+        base = dataType ? base + `, dataType: \"${dataType}\"` : base;
         base = power > 0 ? base + `, power: ${power}` : base;
-        base = watchedSpaces && watchedSpaces.length > 0 ? `, watchedSpaces: [${watchedSpacesText}]` : base;
+        base = strategy ? base + `, strategy: \"${strategy}\"` : base;
+        console.log(`node: ${name}, here's the current state: `, base);
+        base = watchedSpaces && watchedSpaces.length > 0 ? base + `, watchedSpaces: [${watchedSpacesText}]` : base;
+        console.log(`for ${name}, here's the finished product: `, base + tail);
         return base + tail;
     }
     return "";

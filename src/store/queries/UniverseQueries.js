@@ -17,7 +17,7 @@ export const universes = `query {universes {
                               }
                             }`;
 
-export const getUniversesForUser = (username) => `query {getUniversesForUser(username: \"${username}\") {
+export const getUniversesForUser = () => `query {getUniversesForUser {
                                  universeId
                                 name
                                 description
@@ -45,6 +45,13 @@ export const getUniversesForUser = (username) => `query {getUniversesForUser(use
                                         dataType
                                         strategy
                                         power
+                                        value {
+                                            stringValue
+                                        }
+                                        world {
+                                            worldId
+                                            name
+                                        }
                                     }
                                 }
                             }}`;
