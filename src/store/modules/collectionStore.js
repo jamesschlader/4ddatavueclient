@@ -1,5 +1,12 @@
 import launcher from "@/store/launcher";
-import {addNewWorldToExistingUniverse, createUniverse, editUniverse} from "@/store/mutations/UniverseMutations";
+import {
+    addNewWorldToExistingUniverse,
+    createUniverse,
+    createWorld,
+    deleteUniverse,
+    deleteWorld,
+    editUniverse
+} from "@/store/mutations/UniverseMutations";
 import {getUniversesForUser, universes} from "@/store/queries/UniverseQueries";
 
 const state = {
@@ -33,13 +40,9 @@ const mutations = {
     },
     addWorldToCollection: (state, payload) => {
         console.log(`what's the payload?`, payload);
-        const targetCollection = state.collections.find(collection => collection.name === payload.name);
-        console.log(`here's the collection to update with the payload; `, targetCollection);
-        if (targetCollection) {
-            targetCollection.worlds =
-                targetCollection.worlds ? [...targetCollection.worlds, payload.world] : [payload.world];
-        }
-        console.log(`Did the targetCollection save to the state? `, state.collections);
+        const otherCollections = state.collections.filter(collection => collection.universeId !== payload.universeId);
+        state.collections = [...otherCollections, payload];
+        console.log(`Did we save to the state correctly? `, state.collections);
     },
     fetchCollectionsForUser: (state, payload) => {
         if (payload.data.data) {
@@ -55,7 +58,14 @@ const mutations = {
         const collectionToEdit = state.collections.find(collection => collection.universeId === universe.universeId);
         collectionToEdit.name = universe.name;
         collectionToEdit.description = universe.description;
+    },
+    universeDelete: (state, universe) => state.collections =
+        state.collections.filter(collection => collection.universeId !== universe.universeId),
+    worldDelete: (state, universe) => {
+        const otherCollections = state.collections.filter(collection => collection.universeId !== universe.universeId);
+        state.collections = [...otherCollections, universe];
     }
+
 };
 
 const actions = {
@@ -65,13 +75,7 @@ const actions = {
         commit("setCollections", response.data.data.universes);
     },
     addCollection: async ({commit, rootState}, collection) => {
-        const {name, description} = collection;
-        const {user} = rootState.users;
-        const requestObject = {
-            name, description, user,
-            username: user.username
-        };
-        const response = await launcher(createUniverse(requestObject), rootState.users.jwt);
+        const response = await launcher(createUniverse(collection), rootState.users.jwt);
         commit("addCollection", response.data.data.createUniverse);
     },
     addNewWorldToExistingCollection: async ({commit, rootState}, collection) => {
@@ -102,6 +106,20 @@ const actions = {
     editUniverse: async ({commit, rootState}, universe) => {
         const response = await launcher(editUniverse(universe), rootState.users.jwt);
         commit("editUniverse", response.data.data.editUniverse);
+    },
+    createWorld: async ({commit, rootState}, world) => {
+        const response = await launcher(createWorld(world), rootState.users.jwt);
+        commit("addWorldToCollection", response.data.data.addWorldToUniverse);
+    },
+    deleteSomething: async ({commit, rootState}, deleteObj) => {
+        console.log(`gonna deleteType: ${deleteObj.type}; item: `, deleteObj.item);
+        const commitMethod = `${deleteObj.type.toLowerCase()}Delete`;
+        const response = deleteObj.type.toLowerCase() === "universe" ?
+            await launcher(deleteUniverse(deleteObj.item.universeId), rootState.users.jwt)
+            : await launcher(deleteWorld(deleteObj.item.worldId), rootState.users.jwt);
+        console.log(`gonna commit: ${commitMethod}`);
+        console.log(`response = `, response);
+        commit(commitMethod, response.data.data[commitMethod]);
     }
 };
 

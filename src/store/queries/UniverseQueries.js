@@ -9,6 +9,7 @@ export const universes = `query {universes {
                                     name
                                     description
                                     nodes {
+                                        nodeSpaceId
                                         XId
                                         YId
                                         strategy
@@ -29,13 +30,11 @@ export const getUniversesForUser = () => `query {getUniversesForUser {
                                     name
                                     description
                                     nodes {
-                                        name
-                                        description
+                                        nodeSpaceId
                                         XId
                                         YId
                                         watchedSpaces {
-                                            name
-                                            description
+                                            nodeSpaceId
                                             XId
                                             YId
                                             dataType

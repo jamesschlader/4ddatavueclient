@@ -16,6 +16,11 @@
   font-family: inherit;
 }
 
+@mixin basic-button {
+  width: 150px;
+  height: auto;
+}
+
 .container {
   display: grid;
   place-items: center;
@@ -71,7 +76,7 @@ button {
 
   &:hover {
     @include hover-effect;
-    color: $green-lime
+    color: white
   }
 }
 
@@ -87,8 +92,14 @@ button {
 }
 
 .btn-small {
-  width: 150px;
-  height: auto;
+  @include basic-button;
+  background-color: $purple-font;
+  color: $green-lime;
+
+  &.cancel {
+    background-color: $grey-light;
+    color: $black-basic
+  }
 }
 
 .deleter {

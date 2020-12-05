@@ -6,29 +6,41 @@
 </template>
 
 <script>
-    export default {
-        name: "EditTextField",
-        props: ["field", "fieldName"],
-        data() {
-            return {
-                editedField: ""
-            };
-        },
-        methods: {
-            saveField() {
-                this.$emit("save-field", this.fieldName, this.editedField);
-            }
-        },
-        created() {
-            this.editedField = this.field;
-        }
+export default {
+  name: "EditTextField",
+  props: ["field", "fieldName"],
+  data() {
+    return {
+      editedField: ""
     };
+  },
+  methods: {
+    saveField() {
+      this.$emit("save-field", this.fieldName, this.editedField);
+    }
+  },
+  created() {
+    this.editedField = this.field;
+  }
+};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../../assets/css/variables";
+
 .center-vert {
   display: flex;
   align-items: center;
+
+  * {
+    padding: 5px;
+  }
+
+  button {
+    background-color: $grey-light;
+    color: $purple-font;
+
+  }
 }
 
 </style>

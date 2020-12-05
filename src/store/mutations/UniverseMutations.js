@@ -4,9 +4,8 @@ export const createUniverse = universe => `mutation {
                 createUniverse( 
                     universe: { 
                         name: \"${universe.name}\", 
-                        description: \"${universe.description}\", 
-                        username: \"${universe.username}\"}
-                    ) {
+                        description: \"${universe.description}\"
+                    }) {
                         name 
                         description
                         universeId
@@ -15,8 +14,9 @@ export const createUniverse = universe => `mutation {
                             name
                             description
                             nodes{
-                                name
-                                description
+                               nodeSpaceId
+                               XId
+                               YId
                              }
                          }
                          user{
@@ -46,13 +46,11 @@ export const addExistingWorldToNewUniverse = dto => `mutation {
                                             name
                                             description
                                              nodes {
-                                                name
-                                                description
+                                                nodeSpaceId
                                                 XId
                                                 YId
                                                 watchedSpaces {
-                                                    name
-                                                    description
+                                                    nodeSpaceId
                                                     XId
                                                     YId
                                                     dataType
@@ -76,7 +74,7 @@ export const addExistingWorldToNewUniverse = dto => `mutation {
 
 export const addNewWorldToExistingUniverse = dto => {
     const nodes = dto.nodes.filter(node => node.nodeSpaceId && node).map(node => mapNodeAsString(node));
-    let base = `mutation { addWorldToUniverse( worldDTO: { name: \"${dto.name}\"`;
+    let base = `mutation { addWorldToUniverse( world: { name: \"${dto.name}\"`;
     base = dto.universeId > 0 ? base + `, universeId: ${dto.universeId}` : base;
     base = dto.worldId > 0 ? base + `, worldId: ${dto.worldId}` : base;
     base = dto.description ? base + `, description: \"${dto.description}\"` : base;
@@ -95,13 +93,35 @@ export const addNewWorldToExistingUniverse = dto => {
                             description
                             nodes {
                                 nodeSpaceId
-                                name
-                                description
                             }
                         }
                     }
                }`;
     return base + tail;
+};
+
+export const createWorld = dto => {
+    return `mutation {
+        addWorldToUniverse (world: {name: "${dto.name}", 
+                description: "${dto.description}", 
+                universeId: ${dto.universeId}
+           }){
+            universeId
+            name
+            description
+            user {
+                username
+            }
+            worlds {
+                worldId
+                name
+                description
+                nodes {
+                    nodeSpaceId
+                }
+            }
+        }
+    }`;
 };
 
 export const editWorld = dto => {
@@ -133,7 +153,7 @@ export const editWorld = dto => {
 
 export const editUniverse = dto => {
     return `mutation {
-                editUniverse (universe: {universeId: ${dto.universeId}, name: \"${dto.name}\", description: \"${dto.description}\"}) {
+                editUniverse (universe: {universeId: ${dto.universeId}, name: "${dto.name}", description: "${dto.description}"}) {
                        universeId
                        name
                        user {
@@ -145,11 +165,40 @@ export const editUniverse = dto => {
                             name
                             description
                             nodes {
-                                name
-                                description
+                                nodeSpaceId
+                                XId
+                                YId
                             }
                         } 
                     }
                 }`;
 };
 
+export const deleteUniverse = id => {
+    return `mutation {
+        universeDelete(universeId: ${id}){universeId}
+    }`;
+};
+
+export const deleteWorld = (worldId) => {
+    return `mutation { 
+        worldDelete (worldId: ${worldId} ){
+           universeId
+           name
+           user {
+              username
+           }
+           description
+           worlds {
+              worldId
+              name
+              description
+              nodes {
+                nodeSpaceId
+                XId
+                YId
+              }
+           } 
+        }
+    }`;
+};
