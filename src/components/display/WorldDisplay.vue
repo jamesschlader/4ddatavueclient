@@ -1,17 +1,17 @@
 <template>
   <div>
-    <WorldTableCard v-bind:world="this.getSelectedWorld"/>
+    <WorldTable v-bind:world="this.getSelectedWorld"/>
   </div>
 </template>
 
 <script>
 import {mapGetters} from "vuex";
-import WorldTableCard from "@/components/display/WorldTableCard";
+import WorldTable from "@/components/display/WorldTable";
 
 export default {
   name: "WorldDisplay",
   components: {
-    WorldTableCard
+    WorldTable
   },
   data() {
     return {

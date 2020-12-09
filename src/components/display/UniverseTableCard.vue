@@ -87,6 +87,22 @@ export default {
         description: this.worldDescription,
         universeId: this.universe.universeId
       };
+      // make 25 nodes to create with this world
+      const x = 5;
+      const y = 5;
+      const nodes = [];
+      for (let i = 0; i < x; i++) {
+        for (let j = 0; j < y; j++) {
+          const newNode = {
+            nodeSpaceId: 0,
+            xId: i,
+            yId: j
+          };
+          nodes.push(newNode);
+        }
+      }
+      world.newNodes = nodes;
+      console.log(`gonna try and create a world: `, world);
       await this.createWorld(world);
       this.showNewWorld = false;
     },
@@ -129,7 +145,6 @@ export default {
 @import "../../assets/css/_baseStyle.scss";
 
 .universe-card {
-  padding: 5px;
   border: 1px black solid;
   border-radius: 10px;
   position: relative;
@@ -142,15 +157,16 @@ export default {
 }
 
 .field-pair {
-  margin: 5px;
+  margin: 2px;
   display: flex;
   align-content: flex-start;
   align-items: center;
   justify-content: space-between;
 
-  * {
-    margin: 5px;
+  h1, h2, h3, h4, h5 {
+    margin: 2px
   }
+
 }
 
 .trash-can {

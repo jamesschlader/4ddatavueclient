@@ -101,11 +101,17 @@ export const addNewWorldToExistingUniverse = dto => {
 };
 
 export const createWorld = dto => {
-    return `mutation {
+    let base = `mutation {
         addWorldToUniverse (world: {name: "${dto.name}", 
                 description: "${dto.description}", 
-                universeId: ${dto.universeId}
-           }){
+                universeId: ${dto.universeId}`;
+
+    const nodesToAddString = dto.newNodes.map(node => mapNodeAsString(node));
+    console.log(nodesToAddString);
+
+    base = dto.newNodes ? base + `, newNodes: [${nodesToAddString}]` : base;
+
+    const tail = `}){
             universeId
             name
             description
@@ -122,6 +128,7 @@ export const createWorld = dto => {
             }
         }
     }`;
+    return base + tail;
 };
 
 export const editWorld = dto => {
@@ -200,5 +207,25 @@ export const deleteWorld = (worldId) => {
               }
            } 
         }
+    }`;
+};
+
+export const deleteNode = node => {
+    return `mutation { nodeDelete (node: ${mapNodeAsString(node)}){
+         worldId
+            name
+            description
+            nodes {
+                nodeSpaceId
+                XId
+                YId
+                value {
+                    nodeValueId
+                    stringValue
+                    doubleValue
+                    createDate
+                }
+            }
+        } 
     }`;
 };

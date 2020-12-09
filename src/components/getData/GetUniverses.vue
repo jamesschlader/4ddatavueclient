@@ -69,7 +69,7 @@ export default {
 @import "../../assets/css/_variables.scss";
 
 .card-container {
-  margin: 10px;
+  margin: 5px;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));

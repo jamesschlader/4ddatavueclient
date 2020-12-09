@@ -5,25 +5,6 @@
     </div>
     <h4 class="clickable" v-on:click="editWorld(world)">{{ world.name }}</h4>
     <p class="clickable" v-on:click="editWorld(world)">{{ world.description }}</p>
-    <table v-if="world.nodes && world.nodes.length > 0">
-      <thead>
-      <tr>
-        <th class="clickable" v-on:click="editNode(heading)" v-for="(heading, index) in headingNodes"
-            v-bind:key="index">{{ heading.name }}
-        </th>
-        <th class="clickable add-heading" v-on:click="addHeading"><i class="fas fa-plus"></i> Heading</th>
-      </tr>
-      <tr v-show="editingNode">
-        <NodeDisplay v-bind:node="this.nodeToEdit"/>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(node, index) in bodyNodes" v-bind:key="index" class="clickable" v-on:click="editNode(node)">
-        <td class="clickable" v-on:click="editNode(node)">{{ node.value }}</td>
-      </tr>
-      <tr class="clickable" v-on:click="addNode"><i class="fas fa-plus"></i> Value</tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
@@ -81,7 +62,6 @@ export default {
   created() {
   },
   updated() {
-    console.log(`getting update to the incoming world...`, this.world);
   }
 };
 </script>
@@ -92,7 +72,7 @@ export default {
 .card-display {
   display: flex;
   flex-direction: column;
-  padding: 5px;
+  padding: .3rem;
   border: 1px black solid;
   border-radius: 10px;
   margin: .5rem;
