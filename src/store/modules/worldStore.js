@@ -1,10 +1,11 @@
 import launcher from "@/store/launcher";
-import {getAllNodesByWorldId} from "@/store/queries/WorldQueries";
+import {getAllNodesByWorldId, getValueHistoryForNode} from "@/store/queries/WorldQueries";
 import {addManyNodesToWorld, addNodeToWorld, addValueToNode} from "@/store/mutations/worldMutations";
 import {editWorld} from "@/store/mutations/UniverseMutations";
 
 const state = {
     selectedWorld: {},
+    VALUE_HISTORY_LIMIT: 25
 };
 
 const getters = {
@@ -12,7 +13,9 @@ const getters = {
     getHeaderNodes: state => {
         return state.selectedWorld.nodes.filter(node => node.YId === 0).sort((a, b) => a.XId - b.XId);
     },
-    getBodyNodes: state => state.selectedWorld.nodes.filter(node => node.YId > 0).sort((a, b) => a.XId - b.XId)
+    getBodyNodes: state => state.selectedWorld.nodes.filter(node => node.YId > 0).sort((a, b) => a.XId - b.XId),
+    getValueHistoryLimit: state => state.VALUE_HISTORY_LIMIT,
+    getValueHistoryByNode: state => nodeId => state.selectedWorld.nodes.find(node => node.nodeSpaceId === nodeId).values
 };
 
 const mutations = {
@@ -25,15 +28,17 @@ const mutations = {
     addNodeToWorld: (state, newWorld) => state.selectedWorld.nodes.push(newWorld),
     updateNodes: (state, nodes) => state.selectedWorld.nodes = nodes,
     addValueToNode: (state, value) => state.selectedWorld.nodes.find(
-        node => node.nodeSpaceId === value.nodeValueSpace.nodeSpaceId).value = value
+        node => node.nodeSpaceId === value.nodeValueSpace.nodeSpaceId).value = value,
+    getValueHistoryForNode: (state, updateValuesObj) => state.selectedWorld.nodes.find(
+        node => node.nodeSpaceId === updateValuesObj.nodeSpaceId).values =
+        updateValuesObj.values
+
 };
 
 const actions = {
     setSelectedWorld: ({commit}, world) => commit("setSelectedWorld", world),
     addNodeToWorld: async ({commit, rootState}, addNodeToWorldObject) => {
-        console.log(`gonna add a node to worldId: ${addNodeToWorldObject.worldId}`, addNodeToWorldObject);
         const response = await launcher(addNodeToWorld(addNodeToWorldObject), rootState.users.jwt);
-        console.log(`what did we get back from addNodeToWorld? `, response);
         commit("setSelectedWorld", response.data.data.addNodeToWorld);
     },
     addManyNodesToWorld: async ({commit, rootState}, nodes) => {
@@ -52,6 +57,14 @@ const actions = {
     addValueToNode: async ({commit, rootState}, nodeValueDTO) => {
         const response = await launcher(addValueToNode(nodeValueDTO), rootState.users.jwt);
         commit("addValueToNode", response.data.data.addValueToNode);
+    },
+    getValueHistoryForNode: async ({commit, rootState}, getValuesDTO) => {
+        const response = await launcher(getValueHistoryForNode(getValuesDTO), rootState.users.jwt);
+        const updateValuesObj = {
+            nodeSpaceId: getValuesDTO.nodeId,
+            values: response.data.data.getValueHistoryForNode
+        };
+        commit("getValueHistoryForNode", updateValuesObj);
     },
     setWorldAfterDelete: ({commit}, world) => commit("setSelectedWorld", world)
 };

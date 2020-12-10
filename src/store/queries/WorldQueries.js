@@ -26,3 +26,14 @@ export const getAllNodesByWorldId = worldId => {
         }
     } `;
 };
+
+export const getValueHistoryForNode = (getValuesDTO) => {
+    return `query {
+        getValueHistoryForNode(nodeId: ${getValuesDTO.nodeId}, limit: ${getValuesDTO.limit}){
+            nodeValueId
+            stringValue
+            doubleValue
+            createDate
+        }
+    }`;
+};

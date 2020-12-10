@@ -10,7 +10,9 @@
         </div>
         <button class="btn-small cancel node-cell"><i class="fas fa-plus"></i> Column</button>
       </div>
-      <button class="btn-small cancel node-cell" v-on:click.prevent="addRow"><i class="fas fa-plus"></i> Row</button>
+      <button class="btn-small cancel node-cell add-row-button" v-on:click.prevent="addRow"><i class="fas fa-plus"></i>
+        Row
+      </button>
     </div>
 
     <div class="delete-box" v-if="isDelete">
@@ -220,6 +222,10 @@ input {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .add-row-button {
+    align-self: flex-start;
+  }
 }
 
 .node-row {
