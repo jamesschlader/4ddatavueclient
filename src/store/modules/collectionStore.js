@@ -16,7 +16,7 @@ const state = {
         universeId: 0, name: "", description: "", worlds: [
             {
                 worldId: 0, name: "", description: "", nodes: [{
-                    xId: 0, yId: 0, name: "", description: "", strategy: "", dataType: "", power: 1, value: 0, watchedSpaces: [{name: ""}]
+                    xId: 0, yId: 0, strategy: "", power: 1, value: 0, watchedSpaces: [{name: ""}]
                 }]
             }], user: {username: ""}
     }],

@@ -13,7 +13,7 @@ const getters = {
     getHeaderNodes: state => {
         return state.selectedWorld.nodes.filter(node => node.YId === 0).sort((a, b) => a.XId - b.XId);
     },
-    getBodyNodes: state => state.selectedWorld.nodes.filter(node => node.YId > 0).sort((a, b) => a.XId - b.XId),
+    getBodyNodes: state => state.selectedWorld.nodes.filter(node => node.YId > 0).sort((a, b) => a.YId - b.YId),
     getValueHistoryLimit: state => state.VALUE_HISTORY_LIMIT,
     getValueHistoryByNode: state => nodeId => state.selectedWorld.nodes.find(node => node.nodeSpaceId === nodeId).values
 };
@@ -27,8 +27,10 @@ const mutations = {
     },
     addNodeToWorld: (state, newWorld) => state.selectedWorld.nodes.push(newWorld),
     updateNodes: (state, nodes) => state.selectedWorld.nodes = nodes,
-    addValueToNode: (state, value) => state.selectedWorld.nodes.find(
-        node => node.nodeSpaceId === value.nodeValueSpace.nodeSpaceId).value = value,
+    addValueToNode: (state, value) => {
+        state.selectedWorld.nodes.find(
+            node => node.nodeSpaceId === value.nodeValueSpace.nodeSpaceId).value = value;
+    },
     getValueHistoryForNode: (state, updateValuesObj) => state.selectedWorld.nodes.find(
         node => node.nodeSpaceId === updateValuesObj.nodeSpaceId).values =
         updateValuesObj.values
@@ -54,9 +56,11 @@ const actions = {
             rootState.users.jwt);
         commit("updateNodes", response.data.data.getAllNodesByWorldId);
     },
-    addValueToNode: async ({commit, rootState}, nodeValueDTO) => {
+    addValueToNode: async ({commit, dispatch, rootState}, nodeValueDTO) => {
         const response = await launcher(addValueToNode(nodeValueDTO), rootState.users.jwt);
-        commit("addValueToNode", response.data.data.addValueToNode);
+        console.log(`response from server: `, response.data);
+        dispatch("fetchAllTheNodes");
+
     },
     getValueHistoryForNode: async ({commit, rootState}, getValuesDTO) => {
         const response = await launcher(getValueHistoryForNode(getValuesDTO), rootState.users.jwt);

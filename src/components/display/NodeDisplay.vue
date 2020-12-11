@@ -4,28 +4,32 @@
       <input
           type="text"
           v-model="node.value.stringValue"
-          v-on:keyup.enter="addNewValueToNode(node)"
+          v-on:keyup.enter="startAddNewValueToNode"
           v-on:blur="addNewValueToNode(node)"
       />
       <p v-if="!this.showHistorySelect"><i class="fas fa-history" v-on:click.prevent="getHistory(node)"></i></p>
       <p v-else><i class="fas fa-times" v-on:click.prevent="closeHistory"></i></p>
-      <p><i class="fas fa-calculator" v-on:click.prevent="showFunctionCreator(node)"></i></p>
-      <div class="dropdown-content" v-if="this.showHistorySelect">
+      <p v-if="!this.showCalculator"><i class="fas fa-calculator" v-on:click.prevent="functionCreator(node)"></i></p>
+      <p v-else><i class="fas fa-times" v-on:click.prevent="toggleFunctionCreator"></i></p>
+      <div class="dropdown-content higher" v-if="this.showHistorySelect">
         <p v-for="value in getValues()">{{ value.stringValue }} at {{ prettyDate(value.createDate) }}</p>
       </div>
+      <div class="dropdown-content" v-if="this.showCalculator">
+        <CreateCalculator v-bind:node="node" v-on:add-value="addFunctionToNode"/>
+      </div>
     </div>
-
   </div>
 
 </template>
 
 <script>
 import EditTextField from "@/components/getData/EditTextField";
+import CreateCalculator from "@/components/display/CreateCalculator";
 import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: "NodeDisplay",
-  components: {EditTextField},
+  components: {EditTextField, CreateCalculator},
   props: ["node"],
   data() {
     return {
@@ -41,7 +45,9 @@ export default {
       values: [],
       editThis: "",
       multiple: 1,
-      showHistorySelect: false
+      showHistorySelect: false,
+      showCalculator: false,
+      isActive: false
     };
   },
   computed: {
@@ -56,6 +62,9 @@ export default {
       const date = new Date(dateString);
       return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
     },
+    startAddNewValueToNode(event) {
+      event.target.blur();
+    },
     async addNewValueToNode(node) {
       const {stringValue, operator, power} = node.value;
       const nodeValueDTO = {
@@ -67,7 +76,13 @@ export default {
       };
       await this.addValueToNode(nodeValueDTO);
     },
+    async addFunctionToNode(nodeValueDTO) {
+      console.log(`did we get the nodeValueDTO?`, nodeValueDTO);
+      await this.addValueToNode(nodeValueDTO);
+      this.toggleFunctionCreator();
+    },
     async getHistory(node) {
+      this.showCalculator = false;
       const getValuesDTO = {
         nodeId: node.nodeSpaceId,
         limit: this.getValueHistoryLimit * this.multiple
@@ -78,13 +93,18 @@ export default {
     showHistory() {
       this.values = this.getValueHistoryByNode(this.node.nodeSpaceId);
       this.multiple = this.multiple++;
-      this.showHistorySelect = !this.showHistorySelect;
+      this.showHistorySelect = true;
     },
-    showFunctionCreator(node) {
+    functionCreator(node) {
       console.log(`gonna build a calculation for the value of this node: `, node);
+      this.toggleFunctionCreator();
     },
     closeHistory() {
-      this.showHistorySelect = !this.showHistorySelect;
+      this.showHistorySelect = false;
+    },
+    toggleFunctionCreator() {
+      this.closeHistory();
+      this.showCalculator = !this.showCalculator;
     }
   },
   created() {
@@ -161,6 +181,10 @@ export default {
     p {
       width: 90%;
       font-size: .75rem;
+    }
+
+    &.higher {
+      z-index: 11;
     }
   }
 }
