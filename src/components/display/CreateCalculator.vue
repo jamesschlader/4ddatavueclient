@@ -2,7 +2,7 @@
   <div class="calculator-container">
     <ul class="functions">
       <li v-on:click="selectMe" v-bind:class="{selected: functionSelection === 'Sum'}">Sum</li>
-      <li v-on:click="selectMe" v-bind:class="{selected: functionSelection === 'Average'}">Average</li>
+      <li v-on:click="selectMe" v-bind:class="{selected: functionSelection === 'Avg'}">Avg</li>
       <li v-on:click="selectMe" v-bind:class="{selected: functionSelection === 'Product'}">Product</li>
       <li v-on:click="selectMe" v-bind:class="{selected: functionSelection === 'Max'}">Max</li>
       <li v-on:click="selectMe" v-bind:class="{selected: functionSelection === 'Min'}">Min</li>
@@ -11,7 +11,7 @@
     <select class="node-select" v-model="selected" multiple>
       <option
           v-for="node in this.getBodyNodes"
-          v-bind:value="node.nodeSpaceId"
+          v-bind:value="node"
           v-bind:key="node.nodeSpaceId">row: {{ node.YId + 1 }}, column: {{ node.XId + 1 }}
       </option>
     </select>
@@ -45,15 +45,13 @@ export default {
       this.functionSelection = event.target.innerText;
     },
     addFunction() {
-      //emit add function to NodeDisplay
-      console.log(`what's the node we're adding the function to?`, this.node);
       const nodeValueDTO = {
         nodeValueId: 0,
         nodeValueSpace: this.node,
         value: "",
         operator: this.functionSelection.toLowerCase(),
         power: "",
-        nodeValuesSpacesToReduce: this.selected
+        nodeValuesSpacesToReduce: this.selected.map(node => node.nodeSpaceId)
       };
       this.$emit("add-value", nodeValueDTO);
     }

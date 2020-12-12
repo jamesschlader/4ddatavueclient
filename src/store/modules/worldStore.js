@@ -58,7 +58,6 @@ const actions = {
     },
     addValueToNode: async ({commit, dispatch, rootState}, nodeValueDTO) => {
         const response = await launcher(addValueToNode(nodeValueDTO), rootState.users.jwt);
-        console.log(`response from server: `, response.data);
         dispatch("fetchAllTheNodes");
 
     },

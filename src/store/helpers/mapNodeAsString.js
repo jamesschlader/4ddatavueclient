@@ -10,9 +10,7 @@ export function mapNodeAsString(nodeValueSpace) {
         base = dataType ? base + `, dataType: \"${dataType}\"` : base;
         base = power > 0 ? base + `, power: ${power}` : base;
         base = strategy ? base + `, strategy: \"${strategy}\"` : base;
-        console.log(`node: ${name}, here's the current state: `, base);
         base = watchedSpaces && watchedSpaces.length > 0 ? base + `, watchedSpaces: [${watchedSpacesText}]` : base;
-        console.log(`for ${name}, here's the finished product: `, base + tail);
         return base + tail;
     }
     return "";

@@ -26,8 +26,14 @@
 
     <div v-if="this.showNewWorld">
       <div>
-        <input type="text" v-model="worldName" placeholder="Name">
-        <input type="text" v-model="worldDescription" placeholder="Description">
+        <label for="name">Name</label>
+        <input id="name" type="text" v-model="worldName" placeholder="Name">
+        <label for="description">Description</label>
+        <input id="description" type="text" v-model="worldDescription" placeholder="Description">
+        <label for="columns"># of Columns</label>
+        <input id="columns" type="number" v-model="numberOfColumns" placeholder="Number of Columns" min="1">
+        <label for="rows"># of Rows</label>
+        <input id="rows" type="number" v-model="numberOfRows" placeholder="Number of Rows" min="1">
       </div>
       <button class="btn-small" v-on:click.prevent="saveNewWorld"><i class="fas fa-pencil-alt"></i>Add World</button>
       <button class="btn-small cancel" v-on:click.prevent="cancelNewWorld">Cancel</button>
@@ -66,11 +72,14 @@ export default {
       showNewWorld: false,
       isDelete: false,
       deleteType: "",
-      deleteItem: {}
+      deleteItem: {},
+      numberOfColumns: 1,
+      numberOfRows: 1
     };
   },
   methods: {
-    ...mapActions(["setSelectedCollection", "setSelectedWorld", "editUniverse", "createWorld", "deleteSomething"]),
+    ...mapActions(["setSelectedCollection", "setSelectedWorld", "editUniverse", "createWorld", "deleteSomething",
+      "createWorldWithNodes"]),
     editWorld(world) {
       this.setSelectedWorld(world);
       this.$router.push("/editworld");
@@ -87,12 +96,9 @@ export default {
         description: this.worldDescription,
         universeId: this.universe.universeId
       };
-      // make 25 nodes to create with this world
-      const x = 5;
-      const y = 5;
       const nodes = [];
-      for (let i = 0; i < x; i++) {
-        for (let j = 0; j < y; j++) {
+      for (let i = 0; i < this.numberOfColumns; i++) {
+        for (let j = 0; j < this.numberOfRows; j++) {
           const newNode = {
             nodeSpaceId: 0,
             xId: i,
@@ -102,16 +108,13 @@ export default {
         }
       }
       world.newNodes = nodes;
-      console.log(`gonna try and create a world: `, world);
       await this.createWorld(world);
       this.showNewWorld = false;
     },
     editField(field) {
       this.fieldToEdit = field;
-      console.log(`gonna edit the universe ${field}`);
     },
     async saveField(fieldName, editedField) {
-      console.log(`gonna save the field: ${fieldName} to ${editedField}`);
       const universeDTO = {
         universeId: this.universe.universeId,
         name: fieldName === "name" ? editedField : this.universe.name,
@@ -197,4 +200,5 @@ export default {
   height: 50%;
   background-color: rgba(64, 64, 64, .9);
 }
+
 </style>

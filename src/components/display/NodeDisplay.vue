@@ -77,7 +77,6 @@ export default {
       await this.addValueToNode(nodeValueDTO);
     },
     async addFunctionToNode(nodeValueDTO) {
-      console.log(`did we get the nodeValueDTO?`, nodeValueDTO);
       await this.addValueToNode(nodeValueDTO);
       this.toggleFunctionCreator();
     },
@@ -96,7 +95,6 @@ export default {
       this.showHistorySelect = true;
     },
     functionCreator(node) {
-      console.log(`gonna build a calculation for the value of this node: `, node);
       this.toggleFunctionCreator();
     },
     closeHistory() {

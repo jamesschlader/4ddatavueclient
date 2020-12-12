@@ -106,8 +106,7 @@ export const createWorld = dto => {
                 description: "${dto.description}", 
                 universeId: ${dto.universeId}`;
 
-    const nodesToAddString = dto.newNodes.map(node => mapNodeAsString(node));
-    console.log(nodesToAddString);
+    const nodesToAddString = dto.newNodes && dto.newNodes.map(node => mapNodeAsString(node));
 
     base = dto.newNodes ? base + `, newNodes: [${nodesToAddString}]` : base;
 

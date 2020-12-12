@@ -2,7 +2,6 @@ import {mapNodeAsString} from "@/store/helpers/mapNodeAsString";
 import {mapValueAsString} from "@/store/helpers/mapValueAsString";
 
 export const addNodeToWorld = (addNodeToWorldObject) => {
-    console.log(`what is the node to add: `, addNodeToWorldObject);
     return `mutation {
                 addNodeToWorld(node: ${mapNodeAsString(addNodeToWorldObject)}){
                     worldId
