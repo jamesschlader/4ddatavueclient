@@ -42,7 +42,8 @@
       <button class="btn-small" v-on:click.prevent="addWorld"><i class="fas fa-pencil-alt"></i>Add World</button>
     </div>
     <div class="world-container">
-      <WorldTableCard v-for="world in universe.worlds" v-bind:world="world" v-on:edit-world="editWorld"
+      <WorldTableCard v-for="world in universe.worlds" v-bind:world="world" v-bind:key="world.worldId"
+                      v-on:edit-world="editWorld"
                       v-on:expose-delete="exposeDelete"/>
     </div>
 

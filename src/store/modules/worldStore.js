@@ -1,5 +1,5 @@
 import launcher from "@/store/launcher";
-import {getAllNodesByWorldId, getValueHistoryForNode} from "@/store/queries/WorldQueries";
+import {getAllNodesByWorldId, getValueHistoryForNode, getWorldById} from "@/store/queries/WorldQueries";
 import {addManyNodesToWorld, addNodeToWorld, addValueToNode} from "@/store/mutations/worldMutations";
 import {editWorld} from "@/store/mutations/UniverseMutations";
 
@@ -33,7 +33,8 @@ const mutations = {
     },
     getValueHistoryForNode: (state, updateValuesObj) => state.selectedWorld.nodes.find(
         node => node.nodeSpaceId === updateValuesObj.nodeSpaceId).values =
-        updateValuesObj.values
+        updateValuesObj.values,
+    worldById: (state, worldById) => state.selectedWorld = worldById
 
 };
 
@@ -69,7 +70,12 @@ const actions = {
         };
         commit("getValueHistoryForNode", updateValuesObj);
     },
-    setWorldAfterDelete: ({commit}, world) => commit("setSelectedWorld", world)
+    setWorldAfterDelete: ({commit}, world) => commit("setSelectedWorld", world),
+    worldById: async ({commit, rootState}, worldId) => {
+        const response = await launcher(getWorldById(worldId), rootState.users.jwt);
+        console.log(`getting our world back from the db: `, response);
+        commit("worldById", response.data.data.worldById);
+    }
 };
 
 export default {state, getters, mutations, actions};

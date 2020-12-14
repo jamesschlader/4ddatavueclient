@@ -40,7 +40,7 @@ export default {
     },
     sortDescending(a, b) {
       return b - a;
-    },
+    }
   },
   created() {
     this.worldId = this.getSelectedWorld.worldId || 0;
@@ -55,6 +55,7 @@ export default {
     this.nodes = this.getSelectedWorld.nodes || [];
   }
 };
+
 </script>
 
 <style scoped lang="scss">

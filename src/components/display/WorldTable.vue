@@ -163,17 +163,22 @@ input {
 .node-row {
   display: flex;
   flex-direction: row;
-}
 
-.node-cell {
-  height: fit-content;
-  min-width: 80px;
-  margin: 0;
-  border: 1px solid black;
+  &:first-child {
+    border-top: 1px solid black;
+  }
 
-  button {
-    width: auto
+  .node-cell {
+    height: fit-content;
+    min-width: 80px;
+    margin: 0;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+
+    button {
+      width: auto
+    }
   }
 }
-
 </style>

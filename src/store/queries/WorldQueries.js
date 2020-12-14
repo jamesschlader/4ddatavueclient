@@ -37,3 +37,34 @@ export const getValueHistoryForNode = (getValuesDTO) => {
         }
     }`;
 };
+
+export const getWorldById = (worldId) => {
+    return `query { worldById(worldId: ${worldId}){
+        worldId
+        name
+        description
+         nodes {
+                nodeSpaceId
+                XId
+                YId
+                watchedSpaces {
+                    nodeSpaceId
+                    XId
+                    YId
+                    dataType
+                    strategy
+                    power
+                }
+                dataType
+                strategy
+                power
+                value {
+                    stringValue
+                }
+                world {
+                    worldId
+                    name
+                }
+            }
+    }}`;
+};
